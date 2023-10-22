@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SmartExpenses</string>
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
+    <string name="day_month_format">%1$s\n%2$s</string>
+
+</resources>
