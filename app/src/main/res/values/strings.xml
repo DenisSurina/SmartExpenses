@@ -3,5 +3,6 @@
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
     <string name="day_month_format">%1$s\n%2$s</string>
+    <string name="fap_home_main">Floating action button that opens several more, that are used for new income and expense actions</string>
 
 </resources>
