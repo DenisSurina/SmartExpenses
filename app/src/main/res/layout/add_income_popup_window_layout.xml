@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/addIncomePopupWindowTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Income"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textAlignment="center"
+        android:textSize="25sp"
+        android:textColor="@color/green"/>
+
+    <TextView
+        android:id="@+id/addIncomePopupWindowAmountTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addIncomePopupWindowTitle"
+        android:hint="Amount"
+        android:textSize="20sp"
+        android:drawableLeft="@drawable/green_arrow_down"
+        />
+
+    <TextView
+        android:id="@+id/addIncomePopupWindowTitleaddIncomePopupWindowSetDescriptionTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addIncomePopupWindowSetCategoryButton"
+        />
+
+    <Button
+        android:id="@+id/addIncomePopupWindowSetAccountButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="account"
+        app:layout_constraintTop_toBottomOf="@+id/addIncomePopupWindowAmountTextView"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"/>
+
+    <Button
+        android:id="@+id/addIncomePopupWindowSetCategoryButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="category"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addIncomePopupWindowSetAccountButton"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"/>
+
+    <Button
+        android:id="@+id/addIncomePopupWindowSetDateButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Pick Date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addIncomePopupWindowTitleaddIncomePopupWindowSetDescriptionTextView"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

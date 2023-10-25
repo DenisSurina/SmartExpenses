@@ -1,6 +1,8 @@
 package faks.android.smartexpenses.view
 
 
+import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Gravity
@@ -39,6 +41,7 @@ class HomeFragment : Fragment() {
     //boolean to check if main floating action but is clicked or not
     private var clicked : Boolean = false
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,7 +56,28 @@ class HomeFragment : Fragment() {
 
 
         incomeFloatingButton.setOnClickListener{
-            Toast.makeText(requireContext(),"Adding Income", Toast.LENGTH_SHORT).show()
+
+            activity?.let {
+                val builder = AlertDialog.Builder(it)
+                val customLayout = inflater.inflate(R.layout.add_income_popup_window_layout, null)
+                builder.setView(customLayout)
+                    // Add action buttons
+                    .setPositiveButton("Add") { dialog, id ->
+
+
+                    }
+                    .setNegativeButton("Exit",
+                        DialogInterface.OnClickListener { dialog, id ->
+
+                        })
+
+                val openDatePicker = customLayout.findViewById<Button>(R.id.addIncomePopupWindowSetDateButton)
+                openDatePicker.setOnClickListener {
+                    openDatePickerDialog()
+                }
+                val dialog = builder.create()
+                dialog.show()
+            }
         }
 
         expenseFloatingButton.setOnClickListener{
@@ -65,26 +89,6 @@ class HomeFragment : Fragment() {
         }
 
 
-        /*
-        mainFloatingButton.setOnClickListener { view ->
-            activity?.let {
-                val builder = AlertDialog.Builder(it)
-
-                builder.setView(faks.android.smartexpenses.R.layout.popup_window_custom_layout)
-                    // Add action buttons
-                    .setPositiveButton("Add") { dialog, id ->
-                        testFunction(dialog)
-                    }
-                    .setNegativeButton("Exit",
-                        DialogInterface.OnClickListener { dialog, id ->
-
-                        })
-                val dialog = builder.create()
-                dialog.show()
-            }
-        }
-
-        */
 
 
         return binding.root
@@ -110,6 +114,8 @@ class HomeFragment : Fragment() {
         }
     }
 
+
+
     private fun toggleButtonAnimation(){
         if(!clicked){
             binding.homeFragmentAddExpenseButton.startAnimation(fromBottom)
@@ -120,6 +126,26 @@ class HomeFragment : Fragment() {
             binding.homeFragmentAddIncomeButton.startAnimation(toBottom)
             binding.homeFragmentMainFloatingButton.startAnimation(rotateClose)
         }
+    }
+
+
+    private fun openDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            this.requireContext(),
+            { _, selectedYear, selectedMonth, selectedDay ->
+
+                val selectedDate = "$selectedYear-${selectedMonth + 1}-$selectedDay" // Example format
+                TODO("Somehow add this date to database")
+            },
+            year, month, day
+        )
+
+        datePickerDialog.show()
     }
 
 
