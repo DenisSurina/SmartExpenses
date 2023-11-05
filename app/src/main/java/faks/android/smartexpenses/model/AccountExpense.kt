@@ -7,7 +7,7 @@ data class AccountExpense(
     @Embedded val account: Account,
     @Relation(
         parentColumn = "account_id",
-        entityColumn = "account"
+        entityColumn = "account_id"
     )
     val incomesByCategory: List<Expense>
 )

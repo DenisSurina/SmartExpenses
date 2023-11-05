@@ -1,7 +1,7 @@
 package faks.android.smartexpenses.view
 
 
-import android.annotation.SuppressLint
+
 import android.app.DatePickerDialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -16,7 +16,6 @@ import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.FragmentHomeBinding
 import java.util.*

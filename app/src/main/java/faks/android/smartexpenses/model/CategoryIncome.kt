@@ -7,7 +7,7 @@ data class CategoryIncome(
     @Embedded val category: Category,
     @Relation(
         parentColumn = "category_id",
-        entityColumn = "category"
+        entityColumn = "category_id"
     )
     val incomesByCategory: List<Income>
 )
