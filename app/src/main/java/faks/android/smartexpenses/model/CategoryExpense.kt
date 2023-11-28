@@ -6,8 +6,8 @@ import androidx.room.Relation
 data class CategoryExpense(
     @Embedded val category: Category,
     @Relation(
-        parentColumn = "category_id",
-        entityColumn = "category_id"
+        parentColumn = "name",
+        entityColumn = "category_name"
     )
     val incomesByCategory: List<Expense>
 )

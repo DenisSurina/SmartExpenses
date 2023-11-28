@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.room.Room
@@ -28,7 +29,7 @@ class CategoriesFragment : Fragment() {
     private var expenseCategoriesSelected : Boolean = true
 
 
-
+    private lateinit var categoryDao: CategoryDao
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,9 +49,9 @@ class CategoriesFragment : Fragment() {
             SmartExpensesLocalDatabase::class.java, "main-db"
         ).allowMainThreadQueries().build()
 
-        val categoryDao = db.categoryDao()
+        categoryDao = db.categoryDao()
 
-        listCategoriesByType(categoryDao)
+        listCategoriesByType()
 
 
 
@@ -58,6 +59,7 @@ class CategoriesFragment : Fragment() {
 
         mainFloatingButton.setOnClickListener {
             activity?.let {
+
                 val builder = AlertDialog.Builder(it)
                 val customLayout = inflater.inflate(R.layout.add_category_popup_window_layout, null)
 
@@ -69,17 +71,31 @@ class CategoriesFragment : Fragment() {
                     .setPositiveButton("Add") { dialog, id ->
 
                         val name = categoryName.text.toString()
+                        var mismatchName = false
+                        val categories = categoryDao.getAll()
+                        for(category in categories){
+                            if (name == category.name){
 
-                        val type = getSelectedType()
+                                mismatchName = true
+                                break
 
-                        val categoryID =  categoryDao.getAll().size + 1
+                            }
+                        }
 
-                        val newCategory = Category( categoryID,name,type,"icon")
+                        if(!mismatchName){
+                            val type = getSelectedType()
+                            val newCategory = Category( name,type,"icon")
+                            categoryDao.insertAll(newCategory)
+                            clearCategoriesFromLayout()
+                            listCategoriesByType()
+                        }else{
+                            Toast.makeText(
+                                    requireContext(),
+                                    "Category with that name already exists",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                        }
 
-                        categoryDao.insertAll(newCategory)
-
-                        clearCategoriesFromLayout()
-                        listCategoriesByType(categoryDao)
 
 
                     }
@@ -103,7 +119,7 @@ class CategoriesFragment : Fragment() {
             incomeCategoriesSelected = false
             expenseCategoriesSelected = true
 
-            listCategoriesByType(categoryDao)
+            listCategoriesByType()
 
         }
 
@@ -114,7 +130,7 @@ class CategoriesFragment : Fragment() {
             incomeCategoriesSelected = true
             expenseCategoriesSelected = false
 
-            listCategoriesByType(categoryDao)
+            listCategoriesByType()
 
         }
 
@@ -147,6 +163,10 @@ class CategoriesFragment : Fragment() {
 
         deleteCategoryImageView.setOnClickListener{
 
+            categoryDao.delete(category)
+
+            clearCategoriesFromLayout()
+            listCategoriesByType()
 
 
         }
@@ -156,9 +176,9 @@ class CategoriesFragment : Fragment() {
 
     }
 
-    private fun listCategoriesByType( categoryDao : CategoryDao){
+    private fun listCategoriesByType(){
 
-        val categories: List<Category> = categoryDao.findByCategory(getSelectedType())
+        val categories: List<Category> = categoryDao.findByCategoryType(getSelectedType())
 
         for (category in categories){
             addCategoryBriefView(category)

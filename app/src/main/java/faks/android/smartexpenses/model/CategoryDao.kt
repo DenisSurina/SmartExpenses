@@ -12,14 +12,17 @@ interface CategoryDao {
     @Query("SELECT * FROM category")
     fun getAll(): List<Category>
 
-    @Query("SELECT * FROM category WHERE category_id LIKE :categoryID LIMIT 1")
-    fun findByCategory(categoryID: String): List<Category>
+    @Query("SELECT * FROM category WHERE name LIKE :categoryID LIMIT 1")
+    fun findByCategoryName(categoryID: String): List<Category>
+
+    @Query("SELECT * FROM category WHERE type LIKE :categoryType")
+    fun findByCategoryType(categoryType: String): List<Category>
 
     @Insert
     fun insertAll(vararg users: Category)
 
     @Delete
-    fun delete(user: Category)
+    fun delete(category: Category)
 
 
 }

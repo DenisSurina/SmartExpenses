@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 
-@Database(entities = [Account::class,Category::class,Expense::class,Income::class], version = 1)
+@Database(entities = [Account::class,Category::class,Expense::class,Income::class], version = 2)
 abstract class SmartExpensesLocalDatabase : RoomDatabase(){
     abstract fun accountDao(): AccountDao
     abstract fun categoryDao(): CategoryDao
