@@ -7,10 +7,35 @@
     android:layout_height="match_parent">
 
 
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:layout_marginTop="-6dp"
+        android:orientation="horizontal">
+        <Button android:layout_width="0dp"
+            android:id="@+id/list_income_categories_button"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            style="@style/Theme.SmartExpenses"
+            android:text="income"/>
+
+        <Button android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/list_expense_categories_button"
+            style="@style/Theme.SmartExpenses"
+            android:text="expense"/>
+    </LinearLayout>
+
+
+
+    <!-- FloatingActionButton in lower right corner -->
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp">
 
         <!-- Your existing content layout here -->
         <LinearLayout
@@ -24,19 +49,13 @@
             android:orientation="vertical"
             tools:context="faks.android.smartexpenses.view.CategoriesFragment">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Category fragment"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+
 
         </LinearLayout>
 
 
     </ScrollView>
 
-    <!-- FloatingActionButton in lower right corner -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/category_fragment_main_floating_button"
         android:layout_width="wrap_content"

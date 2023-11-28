@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
         android:id="@+id/category_name_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="270dp"
+        android:layout_height="42dp"
+        android:drawableStart="@mipmap/plus_sign"
         android:hint="category name"
-        android:drawableStart="@mipmap/plus_sign"
-        android:textSize="30dp"/>
+        android:textAlignment="center"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/category_type_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/category_name_text_view"
-        android:hint="category type"
-        android:drawableStart="@mipmap/plus_sign"
-        android:textSize="30dp"/>
+    <ImageView
+        android:id="@+id/delete_category_image_view"
+        android:layout_width="46dp"
+        android:layout_height="43dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.726"
+        app:layout_constraintStart_toEndOf="@+id/category_name_text_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/trash_can_icon" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
