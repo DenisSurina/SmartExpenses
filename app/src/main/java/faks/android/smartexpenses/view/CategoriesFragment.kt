@@ -67,8 +67,7 @@ class CategoriesFragment : Fragment() {
                 val categoryName = customLayout.findViewById<EditText>(R.id.add_category_name_edit_text)
 
                 builder.setView(customLayout)
-                    // Add action buttons
-                    .setPositiveButton("Add") { dialog, id ->
+                    .setPositiveButton("Add") { _, _ ->
 
                         val name = categoryName.text.toString()
                         var mismatchName = false
@@ -96,15 +95,8 @@ class CategoriesFragment : Fragment() {
                                 ).show()
                         }
 
-
-
                     }
-                    .setNegativeButton("Exit",
-                        DialogInterface.OnClickListener { dialog, id ->
-
-
-
-                        })
+                    .setNegativeButton("Exit") { _, _ -> }
 
                 val dialog = builder.create()
                 dialog.show()
