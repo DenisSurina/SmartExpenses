@@ -1,7 +1,7 @@
 package faks.android.smartexpenses.view
 
 
-import android.content.Context
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,7 +45,7 @@ class CategoriesFragment : Fragment() {
         val db = Room.databaseBuilder(
             requireContext(),
             SmartExpensesLocalDatabase::class.java, "main-db"
-        ).allowMainThreadQueries().build()
+        ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
 
         categoryDao = db.categoryDao()
 
@@ -63,7 +63,9 @@ class CategoriesFragment : Fragment() {
 
                 //category data
                 val categoryName = customLayout.findViewById<EditText>(R.id.add_category_name_edit_text)
-
+                val openIconGrid = customLayout.findViewById<TextView>(R.id.add_category_icon_text_view)
+                val displayIconImageView = customLayout.findViewById<ImageView>(R.id.add_category_display_icon_image_view)
+                var newCategoryIconId : Int = -1
 
                 // create grid view that displays icons
 
@@ -78,15 +80,28 @@ class CategoriesFragment : Fragment() {
                 )
 
                 val gridView = GridView(it)
-                gridView.adapter = ImageAdapter(it, images)
+                gridView.numColumns = 5 // Set the number of columns as needed
+                gridView.horizontalSpacing = 8 // Adjust horizontal spacing as needed
+                gridView.verticalSpacing = 8 // Adjust vertical spacing as needed
+                gridView.setPadding(16, 16, 16, 16)
+                val adapter = CategoryIconImageAdapter(it, images)
+                gridView.adapter = adapter
+
+
 
                 val alertDialog = AlertDialog.Builder(it)
-                    .setTitle("Image Grid")
                     .setView(gridView)
                     .setPositiveButton("Close", null)
                     .create()
 
-                val openIconGrid = customLayout.findViewById<TextView>(R.id.add_category_icon_text_view)
+                gridView.setOnItemClickListener { _, _, position, _ ->
+                    // Get the selected image ID and pass it to the MainActivity
+                    val selectedImageId = adapter.getItem(position) ?: 0
+                    displayIconImageView.setImageResource(selectedImageId)
+                    newCategoryIconId = selectedImageId
+                    alertDialog.dismiss() // Dismiss the dialog after selecting an image
+                }
+
 
                 openIconGrid.setOnClickListener{
                     alertDialog.show()
@@ -107,9 +122,9 @@ class CategoriesFragment : Fragment() {
                             }
                         }
 
-                        if(!mismatchName){
+                        if(!mismatchName && newCategoryIconId != -1){
                             val type = getSelectedType()
-                            val newCategory = Category( name,type,"icon")
+                            val newCategory = Category( name,type, newCategoryIconId)
                             categoryDao.insertAll(newCategory)
                             clearCategoriesFromLayout()
                             listCategoriesByType()
@@ -158,6 +173,37 @@ class CategoriesFragment : Fragment() {
 
     }
 
+    private fun createGridView( it : Activity, resources: Array<Int>) : GridView {
+
+        val gridView = GridView(it)
+        gridView.numColumns = 5
+        gridView.horizontalSpacing = 8
+        gridView.verticalSpacing = 8
+        gridView.setPadding(16, 16, 16, 16)
+
+        val adapter = CategoryIconImageAdapter(it, resources)
+        gridView.adapter = adapter
+
+        val alertDialog = AlertDialog.Builder(it)
+            .setView(gridView)
+            .setPositiveButton("Close", null)
+            .create()
+/*
+        gridView.setOnItemClickListener { _, _, position, _ ->
+            // Get the selected image ID and pass it to the MainActivity
+            val selectedImageId = adapter.getItem(position) ?: 0
+            displayIconImageView.setImageResource(selectedImageId)
+            alertDialog.dismiss() // Dismiss the dialog after selecting an image
+        }
+
+
+        openIconGrid.setOnClickListener{
+            alertDialog.show()
+        }
+        */
+        return gridView
+    }
+
     private fun getSelectedType() : String {
 
         return if (incomeCategoriesSelected)
@@ -176,6 +222,9 @@ class CategoriesFragment : Fragment() {
         // set category name in view
         val categoryName = newCategoryView.findViewById<TextView>(R.id.category_name_text_view)
         categoryName.text = category.name
+
+        val categoryIcon = newCategoryView.findViewById<ImageView>(R.id.category_icon_image_view)
+        categoryIcon.setImageResource(category.iconID)
 
         val deleteCategoryImageView = newCategoryView.findViewById<ImageView>(R.id.delete_category_image_view)
 
@@ -222,21 +271,6 @@ class CategoriesFragment : Fragment() {
         _binding = null
     }
 
-    private class ImageAdapter(context: Context, private val images: Array<Int>) :
-        ArrayAdapter<Int>(context, 0, images) {
 
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val imageView: ImageView
-            if (convertView == null) {
-                imageView = ImageView(context)
-                imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-            } else {
-                imageView = convertView as ImageView
-            }
-
-            imageView.setImageResource(getItem(position) ?: 0)
-            return imageView
-        }
-    }
 
 }

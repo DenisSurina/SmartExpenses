@@ -9,5 +9,5 @@ import androidx.room.PrimaryKey
 data class Category (
     @PrimaryKey val name: String,
     @ColumnInfo(name = "type") val type: String,
-    @ColumnInfo(name = "icon_id") val iconID: String
+    @ColumnInfo(name = "icon_id") val iconID: Int
 )
