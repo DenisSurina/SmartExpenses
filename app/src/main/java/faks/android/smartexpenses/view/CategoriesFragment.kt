@@ -1,14 +1,12 @@
 package faks.android.smartexpenses.view
 
-import android.content.DialogInterface
+
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.room.Room
@@ -65,6 +63,34 @@ class CategoriesFragment : Fragment() {
 
                 //category data
                 val categoryName = customLayout.findViewById<EditText>(R.id.add_category_name_edit_text)
+
+
+                // create grid view that displays icons
+
+                // Sample images (replace with your actual image resources)
+                val images = arrayOf(
+                    R.drawable.happy_emoji,
+                    R.drawable.green_arrow_down,
+                    R.drawable.floating_button_plus_sign,
+                    R.drawable.paint_pallete,
+                    R.drawable.green_arrow_up
+                    // Add more image resources as needed
+                )
+
+                val gridView = GridView(it)
+                gridView.adapter = ImageAdapter(it, images)
+
+                val alertDialog = AlertDialog.Builder(it)
+                    .setTitle("Image Grid")
+                    .setView(gridView)
+                    .setPositiveButton("Close", null)
+                    .create()
+
+                val openIconGrid = customLayout.findViewById<TextView>(R.id.add_category_icon_text_view)
+
+                openIconGrid.setOnClickListener{
+                    alertDialog.show()
+                }
 
                 builder.setView(customLayout)
                     .setPositiveButton("Add") { _, _ ->
@@ -191,15 +217,26 @@ class CategoriesFragment : Fragment() {
 
 
 
-
-
-
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
+    private class ImageAdapter(context: Context, private val images: Array<Int>) :
+        ArrayAdapter<Int>(context, 0, images) {
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val imageView: ImageView
+            if (convertView == null) {
+                imageView = ImageView(context)
+                imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            } else {
+                imageView = convertView as ImageView
+            }
+
+            imageView.setImageResource(getItem(position) ?: 0)
+            return imageView
+        }
+    }
 
 }
