@@ -15,9 +15,16 @@ import faks.android.smartexpenses.databinding.FragmentCategoriesBinding
 import faks.android.smartexpenses.model.Category
 import faks.android.smartexpenses.model.CategoryDao
 import faks.android.smartexpenses.model.SmartExpensesLocalDatabase
+import kotlin.reflect.typeOf
+
+
+// TODO: optimize and clean up this entire class
 
 class CategoriesFragment : Fragment() {
 
+
+    private val INCOME = "Income"
+    private val EXPENSE = "Expense"
 
     private var _binding: FragmentCategoriesBinding? = null
     private val binding get() = _binding!!
@@ -70,14 +77,7 @@ class CategoriesFragment : Fragment() {
                 // create grid view that displays icons
 
                 // Sample images (replace with your actual image resources)
-                val images = arrayOf(
-                    R.drawable.happy_emoji,
-                    R.drawable.green_arrow_down,
-                    R.drawable.floating_button_plus_sign,
-                    R.drawable.paint_pallete,
-                    R.drawable.green_arrow_up
-                    // Add more image resources as needed
-                )
+                val images = getIconsBy(getSelectedType())
 
                 val gridView = GridView(it)
                 gridView.numColumns = 5 // Set the number of columns as needed
@@ -173,6 +173,8 @@ class CategoriesFragment : Fragment() {
 
     }
 
+
+    // TODO: create function that will create grid view insted of making it in on Create view
     private fun createGridView( it : Activity, resources: Array<Int>) : GridView {
 
         val gridView = GridView(it)
@@ -204,12 +206,45 @@ class CategoriesFragment : Fragment() {
         return gridView
     }
 
+
+    private fun getIconsBy( type : String) : Array<Int>{
+
+        if(type == INCOME) {
+            return arrayOf(
+                R.drawable.paint_pallete,
+                R.drawable.bin,
+                R.drawable.family,
+                R.drawable.cheers,
+                R.drawable.credit_card,
+                R.drawable.home,
+                R.drawable.pawprint,
+                R.drawable.car_icon,
+                R.drawable.restaurant,
+                R.drawable.shopping_cart,
+                R.drawable.sunbed,
+                R.drawable.web
+            )
+        }
+        else{
+
+            return arrayOf(
+                R.drawable.bank,
+                R.drawable.id_card,
+                R.drawable.profit,
+                R.drawable.portfolio,
+                R.drawable.folder
+            )
+
+        }
+
+    }
+
     private fun getSelectedType() : String {
 
         return if (incomeCategoriesSelected)
-            "Income"
+            INCOME
         else
-            "Expense"
+            EXPENSE
 
     }
 
