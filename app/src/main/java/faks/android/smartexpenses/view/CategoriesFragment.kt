@@ -2,6 +2,7 @@ package faks.android.smartexpenses.view
 
 
 import android.app.Activity
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +24,7 @@ import kotlin.reflect.typeOf
 class CategoriesFragment : Fragment() {
 
 
-    private val INCOME = "Income"
+    private val INCOME: String = "Income"
     private val EXPENSE = "Expense"
 
     private var _binding: FragmentCategoriesBinding? = null
@@ -71,41 +72,71 @@ class CategoriesFragment : Fragment() {
                 //category data
                 val categoryName = customLayout.findViewById<EditText>(R.id.add_category_name_edit_text)
                 val openIconGrid = customLayout.findViewById<TextView>(R.id.add_category_icon_text_view)
+                val openColorGrid = customLayout.findViewById<TextView>(R.id.add_category_icon_color_text_view)
                 val displayIconImageView = customLayout.findViewById<ImageView>(R.id.add_category_display_icon_image_view)
                 var newCategoryIconId : Int = -1
+                var newCategoryColorID: Int = Color.WHITE
 
                 // create grid view that displays icons
 
                 // Sample images (replace with your actual image resources)
                 val images = getIconsBy(getSelectedType())
 
-                val gridView = GridView(it)
-                gridView.numColumns = 5 // Set the number of columns as needed
-                gridView.horizontalSpacing = 8 // Adjust horizontal spacing as needed
-                gridView.verticalSpacing = 8 // Adjust vertical spacing as needed
-                gridView.setPadding(16, 16, 16, 16)
+                val iconPickerGridView = GridView(it)
+                iconPickerGridView.numColumns = 5 // Set the number of columns as needed
+                iconPickerGridView.horizontalSpacing = 8 // Adjust horizontal spacing as needed
+                iconPickerGridView.verticalSpacing = 8 // Adjust vertical spacing as needed
+                iconPickerGridView.setPadding(16, 16, 16, 16)
                 val adapter = CategoryIconImageAdapter(it, images)
-                gridView.adapter = adapter
+                iconPickerGridView.adapter = adapter
 
-
-
-                val alertDialog = AlertDialog.Builder(it)
-                    .setView(gridView)
+                val iconPickerAlertDialog = AlertDialog.Builder(it)
+                    .setView(iconPickerGridView)
                     .setPositiveButton("Close", null)
                     .create()
 
-                gridView.setOnItemClickListener { _, _, position, _ ->
+                iconPickerGridView.setOnItemClickListener { _, _, position, _ ->
                     // Get the selected image ID and pass it to the MainActivity
                     val selectedImageId = adapter.getItem(position) ?: 0
                     displayIconImageView.setImageResource(selectedImageId)
                     newCategoryIconId = selectedImageId
-                    alertDialog.dismiss() // Dismiss the dialog after selecting an image
+                    iconPickerAlertDialog.dismiss() // Dismiss the dialog after selecting an image
                 }
 
 
                 openIconGrid.setOnClickListener{
-                    alertDialog.show()
+                    iconPickerAlertDialog.show()
                 }
+
+                val colors = arrayOf(
+                    Color.RED, Color.BLUE, Color.GREEN
+                )
+
+                val colorIconPickerGridView = GridView(it)
+                colorIconPickerGridView.numColumns = 5 // Set the number of columns as needed
+                colorIconPickerGridView.horizontalSpacing = 8 // Adjust horizontal spacing as needed
+                colorIconPickerGridView.verticalSpacing = 8
+
+                colorIconPickerGridView.adapter = CategoryIconColorAdapter(it, colors)
+
+                val colorPickerAlertDialog = AlertDialog.Builder(it)
+                    .setView(colorIconPickerGridView)
+                    .setPositiveButton("Close", null)
+                    .create()
+
+                colorIconPickerGridView.setOnItemClickListener { _, _, position, _ ->
+                    val selectedColor = colors[position]
+                    // Handle the color selection
+                    displayIconImageView.setBackgroundColor(selectedColor)
+                    newCategoryColorID = selectedColor
+                    colorPickerAlertDialog.dismiss()
+                }
+
+
+                openColorGrid.setOnClickListener {
+                    colorPickerAlertDialog.show()
+                }
+
 
                 builder.setView(customLayout)
                     .setPositiveButton("Add") { _, _ ->
@@ -124,17 +155,18 @@ class CategoriesFragment : Fragment() {
 
                         if(!mismatchName && newCategoryIconId != -1){
                             val type = getSelectedType()
-                            val newCategory = Category( name,type, newCategoryIconId)
+                            val newCategory = Category( name,type, newCategoryIconId, newCategoryColorID)
                             categoryDao.insertAll(newCategory)
                             clearCategoriesFromLayout()
                             listCategoriesByType()
                         }else{
                             Toast.makeText(
                                     requireContext(),
-                                    "Category with that name already exists",
+                                    "Category with that name already exists or icon has not been selected",
                                     Toast.LENGTH_LONG
                                 ).show()
                         }
+
 
                     }
                     .setNegativeButton("Exit") { _, _ -> }
@@ -174,45 +206,12 @@ class CategoriesFragment : Fragment() {
     }
 
 
-    // TODO: create function that will create grid view insted of making it in on Create view
-    private fun createGridView( it : Activity, resources: Array<Int>) : GridView {
-
-        val gridView = GridView(it)
-        gridView.numColumns = 5
-        gridView.horizontalSpacing = 8
-        gridView.verticalSpacing = 8
-        gridView.setPadding(16, 16, 16, 16)
-
-        val adapter = CategoryIconImageAdapter(it, resources)
-        gridView.adapter = adapter
-
-        val alertDialog = AlertDialog.Builder(it)
-            .setView(gridView)
-            .setPositiveButton("Close", null)
-            .create()
-/*
-        gridView.setOnItemClickListener { _, _, position, _ ->
-            // Get the selected image ID and pass it to the MainActivity
-            val selectedImageId = adapter.getItem(position) ?: 0
-            displayIconImageView.setImageResource(selectedImageId)
-            alertDialog.dismiss() // Dismiss the dialog after selecting an image
-        }
-
-
-        openIconGrid.setOnClickListener{
-            alertDialog.show()
-        }
-        */
-        return gridView
-    }
-
 
     private fun getIconsBy( type : String) : Array<Int>{
 
-        if(type == INCOME) {
+        if(type == EXPENSE) {
             return arrayOf(
                 R.drawable.paint_pallete,
-                R.drawable.bin,
                 R.drawable.family,
                 R.drawable.cheers,
                 R.drawable.credit_card,
@@ -260,6 +259,8 @@ class CategoriesFragment : Fragment() {
 
         val categoryIcon = newCategoryView.findViewById<ImageView>(R.id.category_icon_image_view)
         categoryIcon.setImageResource(category.iconID)
+
+        categoryIcon.setBackgroundColor(category.colorID)
 
         val deleteCategoryImageView = newCategoryView.findViewById<ImageView>(R.id.delete_category_image_view)
 
