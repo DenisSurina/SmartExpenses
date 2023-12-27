@@ -1,4 +1,4 @@
-package faks.android.smartexpenses.view
+package faks.android.smartexpenses.contoller
 
 import android.os.Bundle
 import android.view.LayoutInflater

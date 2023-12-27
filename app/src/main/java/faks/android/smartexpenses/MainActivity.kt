@@ -7,9 +7,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import faks.android.smartexpenses.databinding.ActivityMainBinding
-import faks.android.smartexpenses.view.CategoriesFragment
-import faks.android.smartexpenses.view.ReportsFragment
-import faks.android.smartexpenses.view.HomeFragment
+import faks.android.smartexpenses.contoller.CategoriesFragment
+import faks.android.smartexpenses.contoller.ReportsFragment
+import faks.android.smartexpenses.contoller.HomeFragment
 
 class MainActivity : AppCompatActivity() {
 

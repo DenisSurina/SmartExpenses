@@ -1,7 +1,6 @@
-package faks.android.smartexpenses.view
+package faks.android.smartexpenses.contoller
 
 
-import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,13 +9,14 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.FragmentCategoriesBinding
 import faks.android.smartexpenses.model.Category
 import faks.android.smartexpenses.model.CategoryDao
 import faks.android.smartexpenses.model.SmartExpensesLocalDatabase
-import kotlin.reflect.typeOf
+import faks.android.smartexpenses.viewmodel.CategoryFragmentViewModel
 
 
 // TODO: optimize and clean up this entire class
@@ -35,7 +35,8 @@ class CategoriesFragment : Fragment() {
     private var expenseCategoriesSelected : Boolean = true
 
 
-    private lateinit var categoryDao: CategoryDao
+
+    private lateinit var categoryViewModel: CategoryFragmentViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,16 +51,9 @@ class CategoriesFragment : Fragment() {
         val listExpenseCategoriesButton = binding.listExpenseCategoriesButton
 
 
-        val db = Room.databaseBuilder(
-            requireContext(),
-            SmartExpensesLocalDatabase::class.java, "main-db"
-        ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
-
-        categoryDao = db.categoryDao()
+        categoryViewModel = ViewModelProvider(this)[CategoryFragmentViewModel::class.java]
 
         listCategoriesByType()
-
-
 
 
 
@@ -142,29 +136,36 @@ class CategoriesFragment : Fragment() {
                     .setPositiveButton("Add") { _, _ ->
 
                         val name = categoryName.text.toString()
-                        var mismatchName = false
-                        val categories = categoryDao.getAll()
-                        for(category in categories){
-                            if (name == category.name){
+                        val type = getSelectedType()
 
-                                mismatchName = true
-                                break
+                        categoryViewModel.getCategoryByName(name){category ->
+                            category ?: run {
+                                if(newCategoryIconId != -1) {
+
+                                    val newCategory =
+                                        Category(name, type, newCategoryIconId, newCategoryColorID)
+                                    categoryViewModel.insertCategory(newCategory)
+                                    clearCategoriesFromLayout()
+                                    listCategoriesByType()
+
+                                }else{
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Did not select image id",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
 
                             }
-                        }
 
-                        if(!mismatchName && newCategoryIconId != -1){
-                            val type = getSelectedType()
-                            val newCategory = Category( name,type, newCategoryIconId, newCategoryColorID)
-                            categoryDao.insertAll(newCategory)
-                            clearCategoriesFromLayout()
-                            listCategoriesByType()
-                        }else{
-                            Toast.makeText(
+                            if(category != null){
+                                Toast.makeText(
                                     requireContext(),
-                                    "Category with that name already exists or icon has not been selected",
+                                    "Category with that name already exists",
                                     Toast.LENGTH_LONG
                                 ).show()
+                            }
+
                         }
 
 
@@ -266,8 +267,7 @@ class CategoriesFragment : Fragment() {
 
         deleteCategoryImageView.setOnClickListener{
 
-            categoryDao.delete(category)
-
+            categoryViewModel.deleteCategory(category)
             clearCategoriesFromLayout()
             listCategoriesByType()
 
@@ -281,12 +281,13 @@ class CategoriesFragment : Fragment() {
 
     private fun listCategoriesByType(){
 
-        val categories: List<Category> = categoryDao.findByCategoryType(getSelectedType())
+        categoryViewModel.getCategoriesByType(getSelectedType()){categories ->
 
-        for (category in categories){
-            addCategoryBriefView(category)
+            for(category in categories){
+                addCategoryBriefView(category)
+            }
+
         }
-
 
     }
 
