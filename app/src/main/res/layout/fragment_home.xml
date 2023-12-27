@@ -25,6 +25,7 @@
             tools:context="faks.android.smartexpenses.contoller.HomeFragment">
 
             <include
+                android:id="@+id/includedTotalBalanceBriefViewLayout"
                 layout="@layout/total_balance_brief_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

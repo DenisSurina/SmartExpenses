@@ -4,6 +4,7 @@ package faks.android.smartexpenses.contoller
 
 import android.app.DatePickerDialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import faks.android.smartexpenses.MainActivity
 import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.FragmentHomeBinding
 import java.util.*
@@ -87,7 +89,12 @@ class HomeFragment : Fragment() {
             showFloatingActionButtons()
         }
 
-
+        // set up a button that open account management activity
+        val manageAccountButton : Button = binding.includedTotalBalanceBriefViewLayout.manageAccountsButton
+        manageAccountButton.setOnClickListener {
+            val intent = Intent(requireContext(), AccountManagementActivity::class.java)
+            startActivity(intent)
+        }
 
 
         return binding.root
