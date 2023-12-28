@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "income")
 data class Income (
-    @PrimaryKey val income_id: Int,
+    @PrimaryKey @ColumnInfo(name = "income_id") val incomeID: Int,
     @ColumnInfo(name = "amount") val amount: String,
-    @ColumnInfo(name = "account_id") val account: Int,
+    @ColumnInfo(name = "account_id") val account: String,
     @ColumnInfo(name = "category_name") val category_name: String,
     @ColumnInfo(name = "description") val description: String?,
     @ColumnInfo(name = "creation_time") val creationTime: String?,

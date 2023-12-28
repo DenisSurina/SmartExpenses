@@ -12,8 +12,8 @@ interface AccountDao {
     @Query("SELECT * FROM account")
     fun getAll(): List<Account>
 
-    @Query("SELECT * FROM account WHERE account_id LIKE :accountID LIMIT 1")
-    fun findByName(accountID: String): Account
+    @Query("SELECT * FROM account WHERE name LIKE :accountName LIMIT 1")
+    fun findByName(accountName: String): Account?
 
     @Insert
     fun insertAll(vararg users: Account)
