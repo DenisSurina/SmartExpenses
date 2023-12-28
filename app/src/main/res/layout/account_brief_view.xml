@@ -3,27 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginBottom="50dp"
+    android:background="@drawable/generic_brief_view_background">
+
 
     <ImageView
         android:id="@+id/account_brief_view_icon"
-        android:layout_width="66dp"
-        android:layout_height="56dp"
+        android:layout_width="38dp"
+        android:layout_height="34dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="29dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/icons_background"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
 
     <TextView
         android:id="@+id/account_brief_view_name"
-        android:layout_width="85dp"
+        android:layout_width="280dp"
         android:layout_height="31dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="28dp"
         android:text="TextView"
         android:gravity="center_vertical"
+        android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/account_brief_view_icon"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,10 +54,27 @@
         android:id="@+id/account_brief_view_total_balance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="44dp"
         android:text="TextView"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
+        android:inputType="number"
         app:layout_constraintTop_toBottomOf="@+id/view" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        android:layout_marginTop="35dp"/>
+
+    <ImageView
+        android:id="@+id/delete_account_image_view"
+        android:layout_width="26dp"
+        android:layout_height="29dp"
+        android:layout_marginTop="29dp"
+        android:src="@drawable/trash_can_icon"
+        app:layout_constraintStart_toEndOf="@+id/account_brief_view_name"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

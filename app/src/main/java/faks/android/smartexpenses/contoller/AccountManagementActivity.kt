@@ -1,7 +1,10 @@
 package faks.android.smartexpenses.contoller
 
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.GridView
@@ -10,8 +13,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.squareup.picasso.Picasso
 import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.ActivityAccountManagementBinding
 import faks.android.smartexpenses.model.Account
@@ -63,20 +68,64 @@ class AccountManagementActivity : AppCompatActivity() {
         val accountIcon = accountView.findViewById<ImageView>(R.id.account_brief_view_icon)
         val accountName = accountView.findViewById<TextView>(R.id.account_brief_view_name)
         val accountTotalBalance = accountView.findViewById<TextView>(R.id.account_brief_view_total_balance)
+        val accountDeleteImageView = accountView.findViewById<ImageView>(R.id.delete_account_image_view)
 
 
-        accountIcon.setImageResource(account.iconID)
-        accountIcon.setBackgroundColor(account.iconColorID)
+
+        Picasso.get()
+            .load(account.iconID)
+            .transform(ImageTransformer(0, 10)) // 30px radius, 10px margin
+            .into(accountIcon)
+
+        val roundedBackground = ContextCompat.getDrawable(this, R.drawable.icons_background) as GradientDrawable
+        roundedBackground.setColor(account.iconColorID)
+        accountIcon.background = roundedBackground
 
         accountName.text = account.name
 
         val balance = "€${account.balance ?: "0"}"
         accountTotalBalance.text = balance
 
+
+        val layoutParams = accountView.layoutParams as? ViewGroup.MarginLayoutParams
+            ?: ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        layoutParams.bottomMargin = 10
+        layoutParams.rightMargin = 5
+        layoutParams.leftMargin = 5
+        accountView.layoutParams = layoutParams
+
+
+        accountDeleteImageView.setOnClickListener {
+            deleteAccount(account,accountView)
+        }
+
+
         binding.accountManagementLinearLayout.addView(accountView)
 
     }
 
+
+    private fun deleteAccount(account: Account,accountView : View){
+
+        val builder = AlertDialog.Builder(this)
+
+        builder.setTitle("Confirm")
+        builder.setMessage("Are you sure you want to delete this account?")
+
+        builder.setPositiveButton("Yes") { dialog, which ->
+            accountManagementActivityViewModel.deleteAccount(account)
+            binding.accountManagementLinearLayout.removeView(accountView)
+        }
+
+        builder.setNegativeButton("No") { dialog, which ->
+
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+
+    }
 
     private fun setupAccountManagementWindow(){
 
