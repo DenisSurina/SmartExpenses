@@ -34,6 +34,15 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+    companion object {
+        const val EXPENSE_CATEGORY = 1
+        const val INCOME_CATEGORY = 2
+        const val ACCOUNT = 3
+        const val INCOME = "Income"
+        const val EXPENSE = "Expense"
+    }
+
+
 
     // Floating Button Animations
     private val rotateOpen : Animation by lazy { AnimationUtils.loadAnimation(requireContext(),R.anim.rotate_open_anim) }
@@ -120,6 +129,14 @@ class HomeFragment : Fragment() {
         activity?.let {
             val builder = AlertDialog.Builder(it)
             val customLayout = it.layoutInflater.inflate(R.layout.add_expense_popup_window_layout, null)
+
+
+            val expenseCategoryTextView = customLayout.findViewById<TextView>(R.id.addExpensePopupWindowSetCategoryButton)
+
+            expenseCategoryTextView.setOnClickListener {
+                listTransactionItems(EXPENSE_CATEGORY)
+            }
+
             builder.setView(customLayout)
                 // Add action buttons
                 .setPositiveButton("Add") { _, _ ->
@@ -145,7 +162,21 @@ class HomeFragment : Fragment() {
 
         activity?.let {
             val builder = AlertDialog.Builder(it)
-            val customLayout = it.layoutInflater.inflate(R.layout.item_linear_layout, null)
+            val customLayout = it.layoutInflater.inflate(R.layout.item_linear_layout, null) as LinearLayout
+
+            if(choice == EXPENSE_CATEGORY){
+
+                homeFragmentViewModel.getCategoriesByType(EXPENSE){categories ->
+
+                    for(category in categories){
+
+                        val item = createItemForLinearLayout(category.iconID,category.colorID,category.name)
+                        customLayout.addView(item)
+                    }
+                }
+
+            }
+
             builder.setView(customLayout)
                 // Add action buttons
                 .setPositiveButton("Add") { _, _ ->
@@ -174,7 +205,7 @@ class HomeFragment : Fragment() {
             .transform(ImageTransformer(0, 10)) // 30px radius, 10px margin
             .into(itemImage)
 
-        val roundedBackground = ContextCompat.getDrawable(this, R.drawable.icons_background) as GradientDrawable
+        val roundedBackground = ContextCompat.getDrawable(requireContext(), R.drawable.icons_background) as GradientDrawable
         roundedBackground.setColor(colorId)
         itemImage?.background = roundedBackground
 
