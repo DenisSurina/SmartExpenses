@@ -8,6 +8,7 @@ import faks.android.smartexpenses.model.SmartExpensesLocalDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
 
 class AccountManagementActivityViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -41,6 +42,15 @@ class AccountManagementActivityViewModel(application: Application) : AndroidView
                 db.accountDao().findByName(name)
             }
             callback(account)
+        }
+    }
+
+    fun getBalances(callback: (List<BigDecimal>)-> Unit){
+        viewModelScope.launch{
+            val balances = withContext(Dispatchers.IO){
+                db.accountDao().getBalances()
+            }
+            callback(balances)
         }
     }
 

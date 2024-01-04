@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 
-@Database(entities = [Account::class,Category::class,Expense::class,Income::class], version = 5)
+@Database(entities = [Account::class,Category::class,Expense::class,Income::class], version = 6)
+@TypeConverters(BigDecimalConverter::class)
 abstract class SmartExpensesLocalDatabase : RoomDatabase(){
     abstract fun accountDao(): AccountDao
     abstract fun categoryDao(): CategoryDao

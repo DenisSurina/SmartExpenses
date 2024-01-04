@@ -21,6 +21,7 @@ import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.ActivityAccountManagementBinding
 import faks.android.smartexpenses.model.Account
 import faks.android.smartexpenses.viewmodel.AccountManagementActivityViewModel
+import java.math.BigDecimal
 
 class AccountManagementActivity : AppCompatActivity() {
 
@@ -44,9 +45,22 @@ class AccountManagementActivity : AppCompatActivity() {
         // Add all the existing accounts to activity
         listAccounts()
 
+        // Write balance to top of the screen
+        writeAllBalance()
 
     }
 
+
+
+    private fun writeAllBalance(){
+
+        accountManagementActivityViewModel.getBalances {balances ->
+            val sum = balances.fold(BigDecimal.ZERO) { acc, next -> acc + next }
+            val str = "$${sum.toPlainString()}"
+            binding.accountManagementTotalBalanceTextView.text = str
+        }
+
+    }
 
 
     private fun listAccounts(){
@@ -116,6 +130,7 @@ class AccountManagementActivity : AppCompatActivity() {
         builder.setPositiveButton("Yes") { dialog, which ->
             accountManagementActivityViewModel.deleteAccount(account)
             binding.accountManagementLinearLayout.removeView(accountView)
+            writeAllBalance()
         }
 
         builder.setNegativeButton("No") { dialog, which ->
@@ -127,6 +142,10 @@ class AccountManagementActivity : AppCompatActivity() {
 
     }
 
+
+    // This function is used to setup account management window
+    // All the logic for creating a new account is located here
+    // TODO make some more complex parts into separate functions
     private fun setupAccountManagementWindow(){
 
 
@@ -190,7 +209,7 @@ class AccountManagementActivity : AppCompatActivity() {
 
 
         val accountName = accountNameEditText.text
-        val accountBalance = accountBalanceEditText.text
+
 
 
         builder.setView(customLayout)
@@ -213,15 +232,17 @@ class AccountManagementActivity : AppCompatActivity() {
                             errors.append("Image not specified.\n")
 
 
-                        if(accountBalance.isBlank())
-                            errors.append("Balance not specified.\n")
+                        val accountBalance = stringToBigDecimal(accountBalanceEditText.text.toString())
+                        if(accountBalance == null)
+                            errors.append("Balance not specified or used characters that are not allowed.\n")
 
 
                         if(errors.isBlank()){
 
-                            val newAccount  = Account(accountName.toString(),accountImageIconId,accountImageColorID,accountBalance.toString())
+                            val newAccount  = Account(accountName.toString(),accountImageIconId,accountImageColorID,accountBalance)
                             accountManagementActivityViewModel.insertAccount(newAccount)
                             addAccountBriefView(newAccount)
+                            writeAllBalance()
 
                         }else{
                             Toast.makeText(this,errors,Toast.LENGTH_LONG).show()
@@ -264,6 +285,16 @@ class AccountManagementActivity : AppCompatActivity() {
             R.drawable.credit_card
         )
 
+    }
+
+
+    private fun stringToBigDecimal(input: String): BigDecimal? {
+        return try {
+            BigDecimal(input)
+        } catch (e: NumberFormatException) {
+            println(e)
+            null
+        }
     }
 
 }
