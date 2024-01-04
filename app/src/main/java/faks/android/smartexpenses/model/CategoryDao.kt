@@ -11,7 +11,7 @@ import androidx.room.Query
 interface CategoryDao {
 
     @Query("SELECT * FROM category")
-    fun getAll(): LiveData<List<Category>>
+    fun getAll(): List<Category>
 
     @Query("SELECT * FROM category WHERE name LIKE :categoryID LIMIT 1")
     fun getByCategoryName(categoryID: String): Category

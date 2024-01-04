@@ -26,7 +26,7 @@ class CategoryFragmentViewModel(application: Application) : AndroidViewModel(app
         }
     }
 
-    val getCategories: LiveData<List<Category>> = db.categoryDao().getAll()
+    val getCategories: List<Category> = db.categoryDao().getAll()
 
 
     fun getCategoryByName(categoryName: String, callback: (Category?) -> Unit) {

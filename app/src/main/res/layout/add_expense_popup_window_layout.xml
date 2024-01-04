@@ -6,16 +6,16 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/addIncomePopupWindowTitle"
+        android:id="@+id/addExpensePopupWindowTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Income"
+        android:text="Expense"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:textAlignment="center"
         android:textSize="25sp"
-        android:textColor="@color/green"/>
+        android:textColor="@color/red"/>
 
     <View
         android:id="@+id/ipw_line1"
@@ -23,12 +23,12 @@
         android:layout_height="1dp"
         android:layout_marginTop="10dp"
         android:background="@android:color/darker_gray"
-        app:layout_constraintTop_toBottomOf="@+id/addIncomePopupWindowAmountTextView"
+        app:layout_constraintTop_toBottomOf="@+id/addExpensePopupWindowAmountTextView"
         tools:layout_editor_absoluteX="0dp" />
 
 
     <TextView
-        android:id="@+id/addIncomePopupWindowAmountTextView"
+        android:id="@+id/addExpensePopupWindowAmountTextView"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:hint="Amount"
@@ -36,8 +36,8 @@
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addIncomePopupWindowTitle"
-        app:drawableLeftCompat="@drawable/green_arrow_down" />
+        app:layout_constraintTop_toBottomOf="@+id/addExpensePopupWindowTitle"
+        app:drawableLeftCompat="@drawable/red_arrow_down" />
 
     <View
         android:id="@+id/ipw_line2"
@@ -45,11 +45,11 @@
         android:layout_height="1dp"
         android:layout_marginTop="10dp"
         android:background="@android:color/darker_gray"
-        app:layout_constraintTop_toBottomOf="@+id/addIncomePopupWindowSetAccountButton"
+        app:layout_constraintTop_toBottomOf="@+id/addExpensePopupWindowSetAccountButton"
         tools:layout_editor_absoluteX="1dp" />
 
     <TextView
-        android:id="@+id/addIncomePopupWindowSetAccountButton"
+        android:id="@+id/addExpensePopupWindowSetAccountButton"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginTop="15dp"
@@ -62,7 +62,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ipw_line1" />
 
     <TextView
-        android:id="@+id/addIncomePopupWindowSetDateButton"
+        android:id="@+id/addExpensePopupWindowSetDateButton"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginTop="15dp"
@@ -75,11 +75,11 @@
         app:layout_constraintTop_toBottomOf="@+id/ipw_line4" />
 
     <EditText
-        android:id="@+id/addIncomePopupWindowTitleAddIncomePopupWindowSetDescriptionTextView"
+        android:id="@+id/addExpensePopupWindowTitleAddExpensePopupWindowSetDescriptionTextView"
         android:layout_width="match_parent"
         android:layout_height="68dp"
         android:layout_marginTop="15dp"
-        android:text="Description"
+        android:hint="Description"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -92,11 +92,11 @@
         android:layout_height="1dp"
         android:layout_marginTop="10dp"
         android:background="@android:color/darker_gray"
-        app:layout_constraintTop_toBottomOf="@+id/addIncomePopupWindowTitleAddIncomePopupWindowSetDescriptionTextView"
+        app:layout_constraintTop_toBottomOf="@+id/addExpensePopupWindowTitleAddExpensePopupWindowSetDescriptionTextView"
         tools:layout_editor_absoluteX="1dp" />
 
     <TextView
-        android:id="@+id/addIncomePopupWindowSetCategoryButton"
+        android:id="@+id/addExpensePopupWindowSetCategoryButton"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginTop="15dp"
@@ -115,7 +115,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="10dp"
         android:background="@android:color/darker_gray"
-        app:layout_constraintTop_toBottomOf="@+id/addIncomePopupWindowSetCategoryButton"
+        app:layout_constraintTop_toBottomOf="@+id/addExpensePopupWindowSetCategoryButton"
         tools:layout_editor_absoluteX="1dp" />
 
 

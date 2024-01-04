@@ -3,24 +3,29 @@ package faks.android.smartexpenses.contoller
 
 
 import android.app.DatePickerDialog
-import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
-import android.widget.PopupWindow
-import android.widget.Toast
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import faks.android.smartexpenses.MainActivity
+import androidx.lifecycle.ViewModelProvider
+import com.squareup.picasso.Picasso
 import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.FragmentHomeBinding
+import faks.android.smartexpenses.viewmodel.AccountManagementActivityViewModel
+import faks.android.smartexpenses.viewmodel.HomeFragmentViewModel
 import java.util.*
+import kotlin.collections.HashMap
 
 
 class HomeFragment : Fragment() {
@@ -29,8 +34,6 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var popupWindow: PopupWindow
-    private val calendar: Calendar = Calendar.getInstance()
 
     // Floating Button Animations
     private val rotateOpen : Animation by lazy { AnimationUtils.loadAnimation(requireContext(),R.anim.rotate_open_anim) }
@@ -43,6 +46,8 @@ class HomeFragment : Fragment() {
     private var clicked : Boolean = false
 
 
+    private lateinit var homeFragmentViewModel: HomeFragmentViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,6 +55,7 @@ class HomeFragment : Fragment() {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+        homeFragmentViewModel = ViewModelProvider(this)[HomeFragmentViewModel::class.java]
 
         val mainFloatingButton    =  binding.homeFragmentMainFloatingButton
         val incomeFloatingButton  =  binding.homeFragmentAddIncomeButton
@@ -57,32 +63,11 @@ class HomeFragment : Fragment() {
 
 
         incomeFloatingButton.setOnClickListener{
-
-            activity?.let {
-                val builder = AlertDialog.Builder(it)
-                val customLayout = inflater.inflate(R.layout.add_income_popup_window_layout, null)
-                builder.setView(customLayout)
-                    // Add action buttons
-                    .setPositiveButton("Add") { dialog, id ->
-
-
-                    }
-                    .setNegativeButton("Exit",
-                        DialogInterface.OnClickListener { dialog, id ->
-
-                        })
-
-                val openDatePicker = customLayout.findViewById<Button>(R.id.addIncomePopupWindowSetDateButton)
-                openDatePicker.setOnClickListener {
-                    openDatePickerDialog()
-                }
-                val dialog = builder.create()
-                dialog.show()
-            }
+            setupAddIncomeWindow()
         }
 
         expenseFloatingButton.setOnClickListener{
-            Toast.makeText(requireContext(),"Adding Expense", Toast.LENGTH_SHORT).show()
+            setupAddExpenseWindow()
         }
 
         mainFloatingButton.setOnClickListener {
@@ -98,6 +83,105 @@ class HomeFragment : Fragment() {
 
 
         return binding.root
+    }
+
+
+
+    private fun setupAddIncomeWindow(){
+
+
+        activity?.let {
+            val builder = AlertDialog.Builder(it)
+            val customLayout = it.layoutInflater.inflate(R.layout.add_income_popup_window_layout, null)
+            builder.setView(customLayout)
+                // Add action buttons
+                .setPositiveButton("Add") { _, _ ->
+
+
+                }
+                .setNegativeButton("Exit"
+                ) { _, _ ->
+
+                }
+
+            val openDatePicker = customLayout.findViewById<TextView>(R.id.addIncomePopupWindowSetDateButton)
+            openDatePicker.setOnClickListener {
+                openDatePickerDialog()
+            }
+            val dialog = builder.create()
+            dialog.show()
+        }
+
+
+    }
+
+
+    private fun setupAddExpenseWindow(){
+        activity?.let {
+            val builder = AlertDialog.Builder(it)
+            val customLayout = it.layoutInflater.inflate(R.layout.add_expense_popup_window_layout, null)
+            builder.setView(customLayout)
+                // Add action buttons
+                .setPositiveButton("Add") { _, _ ->
+
+
+                }
+                .setNegativeButton("Exit"
+                ) { _, _ ->
+
+                }
+
+            val openDatePicker = customLayout.findViewById<TextView>(R.id.addExpensePopupWindowSetDateButton)
+            openDatePicker.setOnClickListener {
+                openDatePickerDialog()
+            }
+            val dialog = builder.create()
+            dialog.show()
+        }
+    }
+
+
+    private fun listTransactionItems( choice : Int){
+
+        activity?.let {
+            val builder = AlertDialog.Builder(it)
+            val customLayout = it.layoutInflater.inflate(R.layout.item_linear_layout, null)
+            builder.setView(customLayout)
+                // Add action buttons
+                .setPositiveButton("Add") { _, _ ->
+
+
+                }
+                .setNegativeButton("Exit"
+                ) { _, _ ->
+
+                }
+
+            val dialog = builder.create()
+            dialog.show()
+        }
+
+    }
+
+    private fun createItemForLinearLayout(iconId: Int, colorId: Int, name: String) : View?{
+
+        val item = activity?.layoutInflater?.inflate(R.layout.item_linear_layout,null)
+        val itemImage = item?.findViewById<ImageView>(R.id.item_image_view_brief)
+        val itemName = item?.findViewById<TextView>(R.id.item_text_view_brief)
+
+        Picasso.get()
+            .load(iconId)
+            .transform(ImageTransformer(0, 10)) // 30px radius, 10px margin
+            .into(itemImage)
+
+        val roundedBackground = ContextCompat.getDrawable(this, R.drawable.icons_background) as GradientDrawable
+        roundedBackground.setColor(colorId)
+        itemImage?.background = roundedBackground
+
+        itemName?.text = name
+
+        return item
+
     }
 
 
@@ -155,35 +239,6 @@ class HomeFragment : Fragment() {
     }
 
 
-    /*
-    helper function for adding new expense_income_view
-     */
-    private fun testFunction( dialog : DialogInterface){
-
-
-/*
-        val customViewTwo = requireActivity().layoutInflater.inflate(R.layout.transaction_brief_view, null)
-
-
-        val dayOfTheMonthTwo = customViewTwo.findViewById<TextView>(R.id.day_of_the_month_text_view)
-        val dayOfTheWeekAndMonthTwo = customViewTwo.findViewById<TextView>(R.id.day_of_the_week_and_month_text_view)
-        val incomeTwo = customViewTwo.findViewById<TextView>(R.id.income_text_view)
-        val expenseTwo = customViewTwo.findViewById<TextView>(R.id.expense_text_view)
-
-        dayOfTheMonthTwo.text = calendar.get(Calendar.DAY_OF_MONTH).toString()
-
-        val dayOfWeekTwo = getDayOfWeekName(calendar.get(Calendar.DAY_OF_WEEK))
-        val monthNameTwo = getMonthName(calendar.get(Calendar.MONTH))
-        val textTwo = getString(R.string.day_month_format, dayOfWeekTwo, monthNameTwo)
-        dayOfTheWeekAndMonthTwo.text = textTwo
-
-        incomeTwo.text = "500"
-        expenseTwo.text = "500"
-
-        binding.linearLayoutContainer.addView(customViewTwo)
-
- */
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -191,71 +246,6 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun getDayOfWeekName(dayOfWeek: Int): String {
-        val daysOfWeek = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
-        return daysOfWeek[dayOfWeek - 1]
-    }
-
-
-
-    private fun getMonthName(month: Int): String {
-        val months = arrayOf(
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        )
-        return months[month]
-    }
-
-
-
-    //#########################################
-    //Possibly delete this
-    //#########################################
-    //floating action button on click action
-    private fun showSmallActionButtons() {
-        // Inflate the layout for the small action buttons
-        val inflater = LayoutInflater.from(requireContext())
-        val smallButtonsView = inflater.inflate(R.layout.layout_small_buttons, null)
-
-        // Create a PopupWindow to display the small action buttons
-        popupWindow = PopupWindow(
-            smallButtonsView,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            true
-        )
-
-        // Show the PopupWindow above the main FloatingActionButton
-        val addNewTransactionButton = binding.homeFragmentMainFloatingButton
-        popupWindow.showAsDropDown(addNewTransactionButton, 0, -addNewTransactionButton.height)
-
-        // Handle click events for each small button
-        val button1 = smallButtonsView.findViewById<Button>(R.id.button1)
-        button1.setOnClickListener {
-            // Show the popup window for button 1
-            showPopupWindowForButton1()
-        }
-
-        // ... Repeat the above process for the other buttons ...
-    }
-
-    private fun showPopupWindowForButton1() {
-        // Inflate the layout for the popup window content
-        val inflater = LayoutInflater.from(requireContext())
-        val popupContentView = inflater.inflate(R.layout.popup_window_layout, null)
-
-        // Create a PopupWindow for the popup window content
-        val popup = PopupWindow(
-            popupContentView,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            true
-        )
-
-        // Show the PopupWindow in the center of the screen
-        val parentView = requireView()
-        popup.showAtLocation(parentView, Gravity.CENTER, 0, 0)
-    }
 
 
 }
