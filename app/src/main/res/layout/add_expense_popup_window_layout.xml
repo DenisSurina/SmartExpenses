@@ -27,11 +27,12 @@
         tools:layout_editor_absoluteX="0dp" />
 
 
-    <TextView
+    <EditText
         android:id="@+id/addExpensePopupWindowAmountTextView"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:hint="Amount"
+        android:inputType="number"
         android:gravity="center_vertical"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"

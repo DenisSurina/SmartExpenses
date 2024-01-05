@@ -103,19 +103,14 @@ class HomeFragment : Fragment() {
             val builder = AlertDialog.Builder(it)
             val customLayout = it.layoutInflater.inflate(R.layout.add_income_popup_window_layout, null)
             builder.setView(customLayout)
-                // Add action buttons
                 .setPositiveButton("Add") { _, _ ->
 
-
-                }
-                .setNegativeButton("Exit"
-                ) { _, _ ->
 
                 }
 
             val openDatePicker = customLayout.findViewById<TextView>(R.id.addIncomePopupWindowSetDateButton)
             openDatePicker.setOnClickListener {
-                openDatePickerDialog()
+                openDatePickerDialog(openDatePicker)
             }
             val dialog = builder.create()
             dialog.show()
@@ -132,77 +127,108 @@ class HomeFragment : Fragment() {
 
 
             val expenseCategoryTextView = customLayout.findViewById<TextView>(R.id.addExpensePopupWindowSetCategoryButton)
-
             expenseCategoryTextView.setOnClickListener {
-                listTransactionItems(EXPENSE_CATEGORY)
+                listTransactionItems(EXPENSE_CATEGORY){name ->
+                    expenseCategoryTextView.text = name
+                }
             }
 
+            val expenseCategorySetAccountTextView = customLayout.findViewById<TextView>(R.id.addExpensePopupWindowSetAccountButton)
+            expenseCategorySetAccountTextView.setOnClickListener {
+                listTransactionItems(ACCOUNT){name ->
+                    expenseCategorySetAccountTextView.text = name
+                }
+            }
+
+
             builder.setView(customLayout)
-                // Add action buttons
                 .setPositiveButton("Add") { _, _ ->
 
-
-                }
-                .setNegativeButton("Exit"
-                ) { _, _ ->
 
                 }
 
             val openDatePicker = customLayout.findViewById<TextView>(R.id.addExpensePopupWindowSetDateButton)
             openDatePicker.setOnClickListener {
-                openDatePickerDialog()
+                openDatePickerDialog(openDatePicker)
             }
             val dialog = builder.create()
             dialog.show()
         }
     }
 
-
-    private fun listTransactionItems( choice : Int){
+    //This functions sets up item_linear_layout do display items such as categories and accounts
+    //Here a user can select category and account for his expenses or incomes
+    private fun listTransactionItems( choice : Int, onItemSelected: (String) -> Unit){
 
         activity?.let {
             val builder = AlertDialog.Builder(it)
             val customLayout = it.layoutInflater.inflate(R.layout.item_linear_layout, null) as LinearLayout
+            builder.setView(customLayout)
+            val dialog = builder.create()
 
-            if(choice == EXPENSE_CATEGORY){
+            when (choice) {
+                EXPENSE_CATEGORY -> {
 
-                homeFragmentViewModel.getCategoriesByType(EXPENSE){categories ->
+                    homeFragmentViewModel.getCategoriesByType(EXPENSE){categories ->
 
-                    for(category in categories){
-
-                        val item = createItemForLinearLayout(category.iconID,category.colorID,category.name)
-                        customLayout.addView(item)
+                        for(category in categories){
+                            val item = createItemForLinearLayout(category.iconID,category.colorID,category.name)
+                            item?.setOnClickListener {
+                                dialog.dismiss()
+                                onItemSelected(category.name)
+                            }
+                            customLayout.addView(item)
+                        }
                     }
-                }
 
+                }
+                INCOME_CATEGORY -> {
+
+                    homeFragmentViewModel.getCategoriesByType(INCOME){categories ->
+
+                        for(category in categories){
+                            val item = createItemForLinearLayout(category.iconID,category.colorID,category.name)
+                            item?.setOnClickListener {
+                                dialog.dismiss()
+                                onItemSelected(category.name)
+                            }
+                            customLayout.addView(item)
+                        }
+                    }
+
+                }
+                ACCOUNT -> {
+
+                    homeFragmentViewModel.getAccounts{accounts ->
+
+                        for(account in accounts){
+                            val item = createItemForLinearLayout(account.iconID,account.iconColorID,account.name)
+                            item?.setOnClickListener {
+                                dialog.dismiss()
+                                onItemSelected(account.name)
+                            }
+                            customLayout.addView(item)
+                        }
+                    }
+
+                }
             }
 
-            builder.setView(customLayout)
-                // Add action buttons
-                .setPositiveButton("Add") { _, _ ->
-
-
-                }
-                .setNegativeButton("Exit"
-                ) { _, _ ->
-
-                }
-
-            val dialog = builder.create()
             dialog.show()
         }
-
     }
 
+
+    // This function creates items (categories,accounts) to be displayed in item_linear_layout
     private fun createItemForLinearLayout(iconId: Int, colorId: Int, name: String) : View?{
 
-        val item = activity?.layoutInflater?.inflate(R.layout.item_linear_layout,null)
-        val itemImage = item?.findViewById<ImageView>(R.id.item_image_view_brief)
-        val itemName = item?.findViewById<TextView>(R.id.item_text_view_brief)
+        val item = requireActivity().layoutInflater.inflate(R.layout.item_brief_view,null)
+        val itemImage = item.findViewById<ImageView>(R.id.item_image_view_brief)
+        val itemName = item.findViewById<TextView>(R.id.item_text_view_brief)
 
         Picasso.get()
             .load(iconId)
-            .transform(ImageTransformer(0, 10)) // 30px radius, 10px margin
+            .transform(ImageTransformer(0, 0))
             .into(itemImage)
 
         val roundedBackground = ContextCompat.getDrawable(requireContext(), R.drawable.icons_background) as GradientDrawable
@@ -250,7 +276,7 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun openDatePickerDialog() {
+    private fun openDatePickerDialog(textView: TextView) {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
@@ -260,8 +286,8 @@ class HomeFragment : Fragment() {
             this.requireContext(),
             { _, selectedYear, selectedMonth, selectedDay ->
 
-                val selectedDate = "$selectedYear-${selectedMonth + 1}-$selectedDay" // Example format
-                TODO("Somehow add this date to database")
+                val selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                textView.text = selectedDate
             },
             year, month, day
         )
