@@ -102,6 +102,22 @@ class HomeFragment : Fragment() {
         activity?.let {
             val builder = AlertDialog.Builder(it)
             val customLayout = it.layoutInflater.inflate(R.layout.add_income_popup_window_layout, null)
+
+            val incomeCategoryTextView = customLayout.findViewById<TextView>(R.id.addIncomePopupWindowSetCategoryButton)
+            incomeCategoryTextView.setOnClickListener {
+                listTransactionItems(INCOME_CATEGORY){ name ->
+                    incomeCategoryTextView.text = name
+                }
+            }
+
+            val expenseIncomeSetAccountTextView = customLayout.findViewById<TextView>(R.id.addIncomePopupWindowSetAccountButton)
+            expenseIncomeSetAccountTextView.setOnClickListener {
+                listTransactionItems(ACCOUNT){name ->
+                    expenseIncomeSetAccountTextView.text = name
+                }
+            }
+
+
             builder.setView(customLayout)
                 .setPositiveButton("Add") { _, _ ->
 
