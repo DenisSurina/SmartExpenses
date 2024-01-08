@@ -21,6 +21,7 @@ import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.FragmentHomeBinding
 import faks.android.smartexpenses.model.Account
 import faks.android.smartexpenses.model.Expense
+import faks.android.smartexpenses.model.Income
 import faks.android.smartexpenses.viewmodel.AccountManagementActivityViewModel
 import faks.android.smartexpenses.viewmodel.HomeFragmentViewModel
 import java.math.BigDecimal
@@ -111,24 +112,72 @@ class HomeFragment : Fragment() {
                 }
             }
 
-            val expenseIncomeSetAccountTextView = customLayout.findViewById<TextView>(R.id.addIncomePopupWindowSetAccountButton)
-            expenseIncomeSetAccountTextView.setOnClickListener {
+            val incomeAccountTextView = customLayout.findViewById<TextView>(R.id.addIncomePopupWindowSetAccountButton)
+            incomeAccountTextView.setOnClickListener {
                 listTransactionItems(ACCOUNT){name ->
-                    expenseIncomeSetAccountTextView.text = name
+                    incomeAccountTextView.text = name
                 }
             }
-
-
-            builder.setView(customLayout)
-                .setPositiveButton("Add") { _, _ ->
-
-
-                }
 
             val openDatePicker = customLayout.findViewById<TextView>(R.id.addIncomePopupWindowSetDateButton)
             openDatePicker.setOnClickListener {
                 openDatePickerDialog(openDatePicker)
             }
+
+            val amountEditText = customLayout.findViewById<EditText>(R.id.addIncomePopupWindowAmountTextView).text
+            val descriptionEditText = customLayout.findViewById<EditText>(R.id.AddIncomePopupWindowSetDescriptionTextView).text
+
+
+            builder.setView(customLayout)
+                .setPositiveButton("Add") { _, _ ->
+
+                    val errors = StringBuilder()
+
+                    if(amountEditText.isBlank())
+                        errors.append("Amount cannot be empty.\n")
+
+                    if(incomeCategoryTextView.text.isBlank())
+                        errors.append("Category must be selected\n")
+
+                    if(incomeAccountTextView.text.isBlank())
+                        errors.append("Account must be selected\n")
+
+                    if(openDatePicker.text.isBlank())
+                        errors.append("Date must be selected\n")
+
+
+                    if(errors.isBlank()){
+
+
+                        val amount = BigDecimal(amountEditText.toString())
+                        val category = incomeCategoryTextView.text.toString()
+                        val accountName = incomeAccountTextView.text.toString()
+                        val date = parseDate(openDatePicker.text.toString())!!
+                        val description = descriptionEditText.toString()
+
+                        val newIncome = Income(amount = amount, categoryName = category, accountID = accountName, description = description, creationTime = date)
+
+                        homeFragmentViewModel.getAccountByName(accountName){ account ->
+
+                            val newBalance = account.balance?.add(amount)
+
+                            val newAccount = Account(account.name,account.iconID,account.iconColorID,newBalance)
+
+                            homeFragmentViewModel.updateAccount(newAccount)
+                            homeFragmentViewModel.insertIncome(newIncome)
+
+                            Toast.makeText(requireContext(),"Income is in", Toast.LENGTH_LONG).show()
+                        }
+
+
+                    }else{
+                        Toast.makeText(requireContext(),errors, Toast.LENGTH_LONG).show()
+                    }
+
+
+                }
+
+
             val dialog = builder.create()
             dialog.show()
         }
