@@ -1,9 +1,6 @@
 package faks.android.smartexpenses.model
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import java.math.BigDecimal
 
 
@@ -21,6 +18,9 @@ interface AccountDao {
 
     @Insert
     fun insertAll(vararg users: Account)
+
+    @Update
+    fun update(account: Account)
 
     @Delete
     fun delete(user: Account)

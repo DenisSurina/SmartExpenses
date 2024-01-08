@@ -188,14 +188,24 @@ class HomeFragment : Fragment() {
 
                         val amount = BigDecimal(amountEditText.toString())
                         val category = expenseCategoryTextView.text.toString()
-                        val account = expenseAccountTextView.text.toString()
+                        val accountName = expenseAccountTextView.text.toString()
                         val date = parseDate(openDatePicker.text.toString())!!
                         val description = descriptionEditText.toString()
 
-                        val newExpense = Expense(amount = amount, categoryName = category, accountID = account, description = description, creationTime = date)
+                        val newExpense = Expense(amount = amount, categoryName = category, accountID = accountName, description = description, creationTime = date)
 
-                        homeFragmentViewModel.insertExpense(newExpense)
-                        Toast.makeText(requireContext(),"Expense is in", Toast.LENGTH_LONG).show()
+                        homeFragmentViewModel.getAccountByName(accountName){ account ->
+
+                            val newBalance = account.balance?.subtract(amount)
+
+                            val newAccount = Account(account.name,account.iconID,account.iconColorID,newBalance)
+
+                            homeFragmentViewModel.updateAccount(newAccount)
+                            homeFragmentViewModel.insertExpense(newExpense)
+
+                            Toast.makeText(requireContext(),"Expense is in", Toast.LENGTH_LONG).show()
+                        }
+
 
                     }else{
                         Toast.makeText(requireContext(),errors, Toast.LENGTH_LONG).show()

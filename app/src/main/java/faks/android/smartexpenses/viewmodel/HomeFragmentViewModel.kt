@@ -33,6 +33,17 @@ class HomeFragmentViewModel(application : Application) : AndroidViewModel(applic
         }
     }
 
+    fun getAccountByName(name: String, callback: (Account) -> Unit) {
+        viewModelScope.launch {
+            val account = withContext(Dispatchers.IO) {
+                db.accountDao().findByName(name)
+            }
+            if (account != null) {
+                callback(account)
+            }
+        }
+    }
+
     fun insertExpense(expense: Expense){
         viewModelScope.launch(Dispatchers.IO) {
             db.expenseDao().insertAll(expense)
@@ -42,6 +53,12 @@ class HomeFragmentViewModel(application : Application) : AndroidViewModel(applic
     fun insertIncome(income: Income){
         viewModelScope.launch(Dispatchers.IO) {
             db.incomeDao().insertAll(income)
+        }
+    }
+
+    fun updateAccount(account: Account){
+        viewModelScope.launch(Dispatchers.IO) {
+            db.accountDao().update(account)
         }
     }
 
