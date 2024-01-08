@@ -3,9 +3,7 @@ package faks.android.smartexpenses.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import faks.android.smartexpenses.model.Account
-import faks.android.smartexpenses.model.Category
-import faks.android.smartexpenses.model.SmartExpensesLocalDatabase
+import faks.android.smartexpenses.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,6 +30,18 @@ class HomeFragmentViewModel(application : Application) : AndroidViewModel(applic
                 db.accountDao().getAll()
             }
             callback(accounts)
+        }
+    }
+
+    fun insertExpense(expense: Expense){
+        viewModelScope.launch(Dispatchers.IO) {
+            db.expenseDao().insertAll(expense)
+        }
+    }
+
+    fun insertIncome(income: Income){
+        viewModelScope.launch(Dispatchers.IO) {
+            db.incomeDao().insertAll(income)
         }
     }
 

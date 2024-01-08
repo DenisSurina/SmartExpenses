@@ -54,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginTop="15dp"
-        android:text="Account"
+        android:hint="Account"
         android:gravity="center_vertical"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -67,7 +67,7 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginTop="15dp"
-        android:text="Pick Date"
+        android:hint="Pick Date"
         android:gravity="center_vertical"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -76,7 +76,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ipw_line4" />
 
     <EditText
-        android:id="@+id/addExpensePopupWindowTitleAddExpensePopupWindowSetDescriptionTextView"
+        android:id="@+id/AddExpensePopupWindowSetDescriptionTextView"
         android:layout_width="match_parent"
         android:layout_height="68dp"
         android:layout_marginTop="15dp"
@@ -93,7 +93,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="10dp"
         android:background="@android:color/darker_gray"
-        app:layout_constraintTop_toBottomOf="@+id/addExpensePopupWindowTitleAddExpensePopupWindowSetDescriptionTextView"
+        app:layout_constraintTop_toBottomOf="@+id/AddExpensePopupWindowSetDescriptionTextView"
         tools:layout_editor_absoluteX="1dp" />
 
     <TextView
@@ -101,8 +101,7 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginTop="15dp"
-        android:text="Category"
-
+        android:hint="Category"
         android:gravity="center_vertical"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"

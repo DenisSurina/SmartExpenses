@@ -12,8 +12,6 @@ interface ExpenseDao {
     @Query("SELECT * FROM expense")
     fun getAll(): List<Expense>
 
-    @Query("SELECT * FROM expense WHERE expense_id LIKE :expenseID LIMIT 1")
-    fun findByName(expenseID: String): Expense
 
     @Insert
     fun insertAll(vararg users: Expense)

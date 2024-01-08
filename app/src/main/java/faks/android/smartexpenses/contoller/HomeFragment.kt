@@ -11,10 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -22,8 +19,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
 import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.FragmentHomeBinding
+import faks.android.smartexpenses.model.Account
+import faks.android.smartexpenses.model.Expense
 import faks.android.smartexpenses.viewmodel.AccountManagementActivityViewModel
 import faks.android.smartexpenses.viewmodel.HomeFragmentViewModel
+import java.math.BigDecimal
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -135,7 +136,7 @@ class HomeFragment : Fragment() {
 
     }
 
-
+    //This function sets up alert window for Expense creation
     private fun setupAddExpenseWindow(){
         activity?.let {
             val builder = AlertDialog.Builder(it)
@@ -149,24 +150,60 @@ class HomeFragment : Fragment() {
                 }
             }
 
-            val expenseCategorySetAccountTextView = customLayout.findViewById<TextView>(R.id.addExpensePopupWindowSetAccountButton)
-            expenseCategorySetAccountTextView.setOnClickListener {
+            val expenseAccountTextView = customLayout.findViewById<TextView>(R.id.addExpensePopupWindowSetAccountButton)
+            expenseAccountTextView.setOnClickListener {
                 listTransactionItems(ACCOUNT){name ->
-                    expenseCategorySetAccountTextView.text = name
+                    expenseAccountTextView.text = name
                 }
             }
-
-
-            builder.setView(customLayout)
-                .setPositiveButton("Add") { _, _ ->
-
-
-                }
 
             val openDatePicker = customLayout.findViewById<TextView>(R.id.addExpensePopupWindowSetDateButton)
             openDatePicker.setOnClickListener {
                 openDatePickerDialog(openDatePicker)
             }
+
+            val amountEditText = customLayout.findViewById<EditText>(R.id.addExpensePopupWindowAmountTextView).text
+            val descriptionEditText = customLayout.findViewById<EditText>(R.id.AddExpensePopupWindowSetDescriptionTextView).text
+
+            builder.setView(customLayout)
+                .setPositiveButton("Add") { _, _ ->
+
+                    val errors = StringBuilder()
+                    
+                    if(amountEditText.isBlank())
+                        errors.append("Amount cannot be empty.\n")
+                    
+                    if(expenseCategoryTextView.text.isBlank())
+                        errors.append("Category must be selected\n")
+
+                    if(expenseAccountTextView.text.isBlank())
+                        errors.append("Account must be selected\n")
+
+                    if(openDatePicker.text.isBlank())
+                        errors.append("Date must be selected\n")
+
+
+                    if(errors.isBlank()){
+
+
+                        val amount = BigDecimal(amountEditText.toString())
+                        val category = expenseCategoryTextView.text.toString()
+                        val account = expenseAccountTextView.text.toString()
+                        val date = parseDate(openDatePicker.text.toString())!!
+                        val description = descriptionEditText.toString()
+
+                        val newExpense = Expense(amount = amount, categoryName = category, accountID = account, description = description, creationTime = date)
+
+                        homeFragmentViewModel.insertExpense(newExpense)
+                        Toast.makeText(requireContext(),"Expense is in", Toast.LENGTH_LONG).show()
+
+                    }else{
+                        Toast.makeText(requireContext(),errors, Toast.LENGTH_LONG).show()
+                    }
+
+                }
+
+
             val dialog = builder.create()
             dialog.show()
         }
@@ -311,6 +348,14 @@ class HomeFragment : Fragment() {
         datePickerDialog.show()
     }
 
+    private fun parseDate(dateString: String): Date? {
+        val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return try {
+            format.parse(dateString)
+        } catch (e: Exception) {
+            null  // Return null if the parsing fails
+        }
+    }
 
 
     override fun onDestroyView() {
