@@ -27,7 +27,7 @@
         tools:layout_editor_absoluteX="0dp" />
 
 
-    <TextView
+    <EditText
         android:id="@+id/addIncomePopupWindowAmountTextView"
         android:layout_width="match_parent"
         android:layout_height="40dp"

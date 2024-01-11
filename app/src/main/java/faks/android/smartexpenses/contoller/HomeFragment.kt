@@ -22,12 +22,11 @@ import faks.android.smartexpenses.databinding.FragmentHomeBinding
 import faks.android.smartexpenses.model.Account
 import faks.android.smartexpenses.model.Expense
 import faks.android.smartexpenses.model.Income
-import faks.android.smartexpenses.viewmodel.AccountManagementActivityViewModel
+import faks.android.smartexpenses.model.IncomeExpenseWrapper
 import faks.android.smartexpenses.viewmodel.HomeFragmentViewModel
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.HashMap
 
 
 class HomeFragment : Fragment() {
@@ -42,6 +41,7 @@ class HomeFragment : Fragment() {
         const val ACCOUNT = 3
         const val INCOME = "Income"
         const val EXPENSE = "Expense"
+        const val DATE_FORMAT = "dd/MM/yyyy"
     }
 
 
@@ -91,6 +91,10 @@ class HomeFragment : Fragment() {
             val intent = Intent(requireContext(), AccountManagementActivity::class.java)
             startActivity(intent)
         }
+
+
+
+        displayTransactions()
 
 
         return binding.root
@@ -166,7 +170,7 @@ class HomeFragment : Fragment() {
                             homeFragmentViewModel.updateAccount(newAccount)
                             homeFragmentViewModel.insertIncome(newIncome)
 
-                            Toast.makeText(requireContext(),"Income is in", Toast.LENGTH_LONG).show()
+                            Toast.makeText(requireContext(),"Added new income", Toast.LENGTH_SHORT).show()
                         }
 
 
@@ -252,7 +256,7 @@ class HomeFragment : Fragment() {
                             homeFragmentViewModel.updateAccount(newAccount)
                             homeFragmentViewModel.insertExpense(newExpense)
 
-                            Toast.makeText(requireContext(),"Expense is in", Toast.LENGTH_LONG).show()
+                            Toast.makeText(requireContext(),"Added new expense", Toast.LENGTH_SHORT).show()
                         }
 
 
@@ -408,13 +412,103 @@ class HomeFragment : Fragment() {
     }
 
     private fun parseDate(dateString: String): Date? {
-        val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val format = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
         return try {
             format.parse(dateString)
         } catch (e: Exception) {
             null  // Return null if the parsing fails
         }
     }
+
+
+
+
+    private fun displayTransactions(){
+
+        homeFragmentViewModel.getIncomeExpenseWrapperMapByDateString(DATE_FORMAT) { wrappers->
+
+
+            val wrappersSorted = wrappers.toSortedMap()
+
+            for(key in wrappersSorted.keys){
+
+                val transactionView = requireActivity().layoutInflater.inflate(R.layout.transaction_brief_view,null)
+
+                val transactionDayNumber = transactionView.findViewById<TextView>(R.id.day_of_the_month_text_view)
+                val transactionDayText = transactionView.findViewById<TextView>(R.id.day_of_the_week_and_month_text_view)
+                val incomeTextView = transactionView.findViewById<TextView>(R.id.income_text_view)
+                val expenseTextView = transactionView.findViewById<TextView>(R.id.expense_text_view)
+
+                val date = SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).parse(key)
+
+                val incomes = wrappersSorted.getValue(key).filter { it.type == IncomeExpenseWrapper.INCOME }
+                val expenses = wrappersSorted.getValue(key).filter { it.type == IncomeExpenseWrapper.EXPENSE }
+
+                val sumOfIncomes = incomes.map { v -> v.amount }.sum()
+                val sumOfExpenses = expenses.map { v -> v.amount }.sum()
+
+                transactionDayNumber.text = date?.date.toString()
+                val transactionDayFormat = formatTransactionDateString(date!!)
+                transactionDayText.text = transactionDayFormat
+                incomeTextView.text = "$sumOfIncomes"
+                expenseTextView.text = "$sumOfExpenses"
+
+                binding.linearLayoutContainer.addView(transactionView)
+
+            }
+
+        }
+
+    }
+
+
+
+    private fun formatTransactionDateString(date: Date): String{
+
+        val dayOfTheWeek = getDayOfTheWeek(date)
+        val month = getMonth(date)
+        val year = date.year + 1900
+
+        return "$dayOfTheWeek\n$month. $year"
+
+    }
+
+    private fun getDayOfTheWeek(date: Date): String{
+        return when (date.day) {
+            1 -> "Monday"
+            2 -> "Tuesday"
+            3 -> "Wednesday"
+            4 -> "Thursday"
+            5 -> "Friday"
+            6 -> "Saturday"
+            else -> "Sunday"
+        }
+    }
+
+    private fun getMonth(date: Date): String{
+        return when (date.month) {
+            1 -> "Feb"
+            2 -> "March"
+            3 -> "May"
+            5 -> "June"
+            6 -> "July"
+            7 -> "Aug"
+            8 -> "Sep"
+            9 -> "Oct"
+            10 -> "Nov"
+            11 -> "Dec"
+            else -> "Jan"
+        }
+    }
+
+    private fun Iterable<BigDecimal>.sum(): BigDecimal {
+        var sum: BigDecimal = BigDecimal.ZERO
+        for (element in this) {
+            sum += element
+        }
+        return sum
+    }
+
 
 
     override fun onDestroyView() {
