@@ -101,6 +101,13 @@ class HomeFragment : Fragment() {
     }
 
 
+    private fun setupMainTransactionView(){
+
+
+
+    }
+
+
 
     private fun setupAddIncomeWindow(){
 
@@ -171,6 +178,7 @@ class HomeFragment : Fragment() {
                             homeFragmentViewModel.insertIncome(newIncome)
 
                             Toast.makeText(requireContext(),"Added new income", Toast.LENGTH_SHORT).show()
+                            displayTransactions()
                         }
 
 
@@ -257,6 +265,7 @@ class HomeFragment : Fragment() {
                             homeFragmentViewModel.insertExpense(newExpense)
 
                             Toast.makeText(requireContext(),"Added new expense", Toast.LENGTH_SHORT).show()
+                            displayTransactions()
                         }
 
 
@@ -428,16 +437,18 @@ class HomeFragment : Fragment() {
         homeFragmentViewModel.getIncomeExpenseWrapperMapByDateString(DATE_FORMAT) { wrappers->
 
 
+            val includedViewId = R.id.includedTotalBalanceBriefViewLayout
+
+            for (i in  binding.linearLayoutContainer.childCount - 1 downTo 0) {
+                val child = binding.linearLayoutContainer.getChildAt(i)
+                if (child.id != includedViewId) {
+                    binding.linearLayoutContainer.removeViewAt(i)
+                }
+            }
+
             val wrappersSorted = wrappers.toSortedMap()
 
             for(key in wrappersSorted.keys){
-
-                val transactionView = requireActivity().layoutInflater.inflate(R.layout.transaction_brief_view,null)
-
-                val transactionDayNumber = transactionView.findViewById<TextView>(R.id.day_of_the_month_text_view)
-                val transactionDayText = transactionView.findViewById<TextView>(R.id.day_of_the_week_and_month_text_view)
-                val incomeTextView = transactionView.findViewById<TextView>(R.id.income_text_view)
-                val expenseTextView = transactionView.findViewById<TextView>(R.id.expense_text_view)
 
                 val date = SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).parse(key)
 
@@ -447,13 +458,10 @@ class HomeFragment : Fragment() {
                 val sumOfIncomes = incomes.map { v -> v.amount }.sum()
                 val sumOfExpenses = expenses.map { v -> v.amount }.sum()
 
-                transactionDayNumber.text = date?.date.toString()
-                val transactionDayFormat = formatTransactionDateString(date!!)
-                transactionDayText.text = transactionDayFormat
-                incomeTextView.text = "$sumOfIncomes"
-                expenseTextView.text = "$sumOfExpenses"
 
-                binding.linearLayoutContainer.addView(transactionView)
+                if (date != null) {
+                    addTransactionSingleView(date,sumOfIncomes,sumOfExpenses)
+                }
 
             }
 
@@ -461,6 +469,22 @@ class HomeFragment : Fragment() {
 
     }
 
+    private fun addTransactionSingleView(date: Date,incomeSum: BigDecimal, expenseSum: BigDecimal ){
+
+        val transactionView = requireActivity().layoutInflater.inflate(R.layout.transaction_brief_view,null)
+        val transactionDayNumber = transactionView.findViewById<TextView>(R.id.day_of_the_month_text_view)
+        val transactionDayText = transactionView.findViewById<TextView>(R.id.day_of_the_week_and_month_text_view)
+        val incomeTextView = transactionView.findViewById<TextView>(R.id.income_text_view)
+        val expenseTextView = transactionView.findViewById<TextView>(R.id.expense_text_view)
+
+        transactionDayNumber.text = date?.date.toString()
+        val transactionDayFormat = formatTransactionDateString(date!!)
+        transactionDayText.text = transactionDayFormat
+        incomeTextView.text = "$incomeSum"
+        expenseTextView.text = "$expenseSum"
+
+        binding.linearLayoutContainer.addView(transactionView)
+    }
 
 
     private fun formatTransactionDateString(date: Date): String{
