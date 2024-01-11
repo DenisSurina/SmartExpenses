@@ -74,6 +74,15 @@ class HomeFragmentViewModel(application : Application) : AndroidViewModel(applic
         }
     }
 
+    fun getIncomes(callback: (List<Income>) -> Unit){
+        viewModelScope.launch{
+            val income = withContext(Dispatchers.IO){
+                db.incomeDao().getAll()
+            }
+            callback(income)
+        }
+    }
+
     fun getIncomeExpenseWrapperMapByDateString(dateString : String ,callback: (Map<String, List<IncomeExpenseWrapper>>) -> Unit){
         viewModelScope.launch{
             val wrappers = withContext(Dispatchers.IO){

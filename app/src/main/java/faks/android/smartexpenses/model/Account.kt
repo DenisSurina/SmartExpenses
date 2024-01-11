@@ -11,5 +11,5 @@ data class Account(
     @PrimaryKey val name: String,
     @ColumnInfo(name = "icon_id") val iconID: Int,
     @ColumnInfo(name = "color_id") val iconColorID: Int,
-    @ColumnInfo(name = "balance") val balance: BigDecimal?
+    @ColumnInfo(name = "balance") val balance: BigDecimal
 )

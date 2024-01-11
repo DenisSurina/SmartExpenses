@@ -239,7 +239,7 @@ class AccountManagementActivity : AppCompatActivity() {
 
                         if(errors.isBlank()){
 
-                            val newAccount  = Account(accountName.toString(),accountImageIconId,accountImageColorID,accountBalance)
+                            val newAccount  = Account(accountName.toString(),accountImageIconId,accountImageColorID,accountBalance!!)
                             accountManagementActivityViewModel.insertAccount(newAccount)
                             addAccountBriefView(newAccount)
                             writeAllBalance()

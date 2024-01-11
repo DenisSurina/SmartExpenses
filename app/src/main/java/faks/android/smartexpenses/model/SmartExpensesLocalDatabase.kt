@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 
-@Database(entities = [Account::class,Category::class,Expense::class,Income::class], version = 7)
+@Database(entities = [Account::class,Category::class,Expense::class,Income::class], version = 8)
 @TypeConverters(Converters::class)
 abstract class SmartExpensesLocalDatabase : RoomDatabase(){
     abstract fun accountDao(): AccountDao

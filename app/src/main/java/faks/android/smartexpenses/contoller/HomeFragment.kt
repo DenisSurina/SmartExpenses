@@ -92,6 +92,7 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
 
+        setupMainTransactionView()
 
 
         displayTransactions()
@@ -100,9 +101,31 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        setupMainTransactionView()
+    }
+
 
     private fun setupMainTransactionView(){
 
+
+        homeFragmentViewModel.getExpenses { expenses ->
+            val expensesSum = expenses.map { expense: Expense ->  expense.amount}.sum()
+            binding.includedTotalBalanceBriefViewLayout.totalExpenseBriefDisplayTextView.text = "€$expensesSum"
+        }
+
+        homeFragmentViewModel.getIncomes { incomes ->
+            val incomeSum = incomes.map { income: Income ->  income.amount}.sum()
+            binding.includedTotalBalanceBriefViewLayout.totalIncomeBriefDisplayTextView.text = "€$incomeSum"
+        }
+
+        homeFragmentViewModel.getAccounts { accounts ->
+
+            val totalBalance = accounts.map { account: Account -> account.balance }.sum()
+            binding.includedTotalBalanceBriefViewLayout.totalBalanceTextView.text = "€$totalBalance"
+
+        }
 
 
     }
@@ -170,7 +193,7 @@ class HomeFragment : Fragment() {
 
                         homeFragmentViewModel.getAccountByName(accountName){ account ->
 
-                            val newBalance = account.balance?.add(amount)
+                            val newBalance = account.balance.add(amount)
 
                             val newAccount = Account(account.name,account.iconID,account.iconColorID,newBalance)
 
@@ -179,6 +202,7 @@ class HomeFragment : Fragment() {
 
                             Toast.makeText(requireContext(),"Added new income", Toast.LENGTH_SHORT).show()
                             displayTransactions()
+                            setupMainTransactionView()
                         }
 
 
@@ -257,7 +281,7 @@ class HomeFragment : Fragment() {
 
                         homeFragmentViewModel.getAccountByName(accountName){ account ->
 
-                            val newBalance = account.balance?.subtract(amount)
+                            val newBalance = account.balance.subtract(amount)
 
                             val newAccount = Account(account.name,account.iconID,account.iconColorID,newBalance)
 
@@ -266,6 +290,7 @@ class HomeFragment : Fragment() {
 
                             Toast.makeText(requireContext(),"Added new expense", Toast.LENGTH_SHORT).show()
                             displayTransactions()
+                            setupMainTransactionView()
                         }
 
 
@@ -480,8 +505,8 @@ class HomeFragment : Fragment() {
         transactionDayNumber.text = date?.date.toString()
         val transactionDayFormat = formatTransactionDateString(date!!)
         transactionDayText.text = transactionDayFormat
-        incomeTextView.text = "$incomeSum"
-        expenseTextView.text = "$expenseSum"
+        incomeTextView.text = "€$incomeSum"
+        expenseTextView.text = "€$expenseSum"
 
         binding.linearLayoutContainer.addView(transactionView)
     }
