@@ -14,7 +14,7 @@ interface CategoryDao {
     fun getAll(): List<Category>
 
     @Query("SELECT * FROM category WHERE name LIKE :categoryID LIMIT 1")
-    fun getByCategoryName(categoryID: String): Category
+    fun getByCategoryName(categoryID: String): Category?
 
     @Query("SELECT * FROM category WHERE type LIKE :categoryType")
     fun findByCategoryType(categoryType: String): List<Category>
@@ -24,6 +24,5 @@ interface CategoryDao {
 
     @Delete
     fun delete(category: Category)
-
 
 }

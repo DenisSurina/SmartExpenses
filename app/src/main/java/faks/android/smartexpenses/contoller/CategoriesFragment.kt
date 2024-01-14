@@ -13,9 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.FragmentCategoriesBinding
-import faks.android.smartexpenses.model.Category
-import faks.android.smartexpenses.model.CategoryDao
-import faks.android.smartexpenses.model.SmartExpensesLocalDatabase
+import faks.android.smartexpenses.model.*
 import faks.android.smartexpenses.viewmodel.CategoryFragmentViewModel
 
 
@@ -24,8 +22,9 @@ import faks.android.smartexpenses.viewmodel.CategoryFragmentViewModel
 class CategoriesFragment : Fragment() {
 
 
-    private val INCOME: String = "Income"
-    private val EXPENSE = "Expense"
+
+
+
 
     private var _binding: FragmentCategoriesBinding? = null
     private val binding get() = _binding!!
@@ -37,6 +36,12 @@ class CategoriesFragment : Fragment() {
 
 
     private lateinit var categoryViewModel: CategoryFragmentViewModel
+
+
+    companion object{
+        const val INCOME: String = "Income"
+        const val EXPENSE: String = "Expense"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -266,12 +271,7 @@ class CategoriesFragment : Fragment() {
         val deleteCategoryImageView = newCategoryView.findViewById<ImageView>(R.id.delete_category_image_view)
 
         deleteCategoryImageView.setOnClickListener{
-
-            categoryViewModel.deleteCategory(category)
-            clearCategoriesFromLayout()
-            listCategoriesByType()
-
-
+            deleteCategoryPopup(category)
         }
 
         binding.categoryLinearLayoutContainer.addView(newCategoryView)
@@ -301,6 +301,62 @@ class CategoriesFragment : Fragment() {
     }
 
 
+    private fun deleteCategoryPopup(category: Category){
+
+        val builder = AlertDialog.Builder(requireContext())
+
+        builder.setTitle("Confirm")
+        builder.setMessage("Are you sure you want to delete this category?\n" +
+                "All income and expenses will have their categories changed to 'default_category'")
+
+        builder.setPositiveButton("Yes") { _, _ ->
+
+            transferTransactionAccountToDefaultCategory(category)
+            categoryViewModel.deleteCategory(category)
+            clearCategoriesFromLayout()
+            listCategoriesByType()
+        }
+
+        builder.setNegativeButton("No") { _, _ ->
+
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+
+    }
+
+
+    // When deleting category all incomes and expenses with that category will be defaulted to default category
+    private fun transferTransactionAccountToDefaultCategory(category: Category){
+
+        categoryViewModel.getTransactionsByCategory(category.name){ incomes, expenses ->
+
+            for(income in incomes){
+
+                val newIncome = Income(
+                    income.incomeID,income.amount, income.accountID,
+                    SmartExpensesLocalDatabase.DEFAULT_CATEGORY_INCOME, income.creationTime, income.description
+                )
+
+                categoryViewModel.updateIncome(newIncome)
+
+            }
+
+            for(expense in expenses){
+
+                val newExpense = Expense(
+                    expense.expenseID,expense.amount, expense.accountID,
+                    SmartExpensesLocalDatabase.DEFAULT_CATEGORY_EXPENSE, expense.creationTime, expense.description
+                )
+
+                categoryViewModel.updateExpense(newExpense)
+
+            }
+
+        }
+
+    }
 
 
     override fun onDestroyView() {

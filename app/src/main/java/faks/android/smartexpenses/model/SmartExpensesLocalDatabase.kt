@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 
-@Database(entities = [Account::class,Category::class,Expense::class,Income::class], version = 8)
+@Database(entities = [Account::class,Category::class,Expense::class,Income::class], version = 9)
 @TypeConverters(Converters::class)
 abstract class SmartExpensesLocalDatabase : RoomDatabase(){
     abstract fun accountDao(): AccountDao
@@ -20,6 +20,10 @@ abstract class SmartExpensesLocalDatabase : RoomDatabase(){
     companion object {
         @Volatile
         private var INSTANCE: SmartExpensesLocalDatabase? = null
+        const val OTHERS = "others"
+        const val DEFAULT_CATEGORY_INCOME = "default_category_income"
+        const val DEFAULT_CATEGORY_EXPENSE = "default_category_income"
+
 
         fun getDatabase(context: Context): SmartExpensesLocalDatabase {
             return INSTANCE ?: synchronized(this) {

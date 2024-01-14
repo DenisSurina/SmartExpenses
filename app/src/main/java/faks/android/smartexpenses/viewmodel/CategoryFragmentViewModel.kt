@@ -2,10 +2,10 @@ package faks.android.smartexpenses.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import faks.android.smartexpenses.model.Category
+import faks.android.smartexpenses.model.Expense
+import faks.android.smartexpenses.model.Income
 import faks.android.smartexpenses.model.SmartExpensesLocalDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,6 +43,30 @@ class CategoryFragmentViewModel(application: Application) : AndroidViewModel(app
                 db.categoryDao().findByCategoryType(categoryType)
             }
             callback(categories)
+        }
+    }
+
+    fun getTransactionsByCategory(categoryName: String, callback: (List<Income>, List<Expense>) -> Unit){
+        viewModelScope.launch{
+            val incomes = withContext(Dispatchers.IO){
+                db.incomeDao().getIncomeByCategory(categoryName)
+            }
+            val expenses = withContext(Dispatchers.IO){
+                db.expenseDao().getExpensesByCategory(categoryName)
+            }
+            callback(incomes,expenses)
+        }
+    }
+
+    fun updateIncome(income: Income){
+        viewModelScope.launch(Dispatchers.IO){
+            db.incomeDao().update(income)
+        }
+    }
+
+    fun updateExpense(expense: Expense){
+        viewModelScope.launch(Dispatchers.IO){
+            db.expenseDao().update(expense)
         }
     }
 

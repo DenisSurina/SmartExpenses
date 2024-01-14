@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import faks.android.smartexpenses.model.Account
+import faks.android.smartexpenses.model.Expense
+import faks.android.smartexpenses.model.Income
 import faks.android.smartexpenses.model.SmartExpensesLocalDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,6 +44,30 @@ class AccountManagementActivityViewModel(application: Application) : AndroidView
                 db.accountDao().findByName(name)
             }
             callback(account)
+        }
+    }
+
+    fun getTransactionsByAccount(accountName: String, callback: ( List<Income>, List<Expense>) -> Unit){
+        viewModelScope.launch{
+            val incomes = withContext(Dispatchers.IO){
+                db.incomeDao().getIncomeByAccount(accountName)
+            }
+            val expenses = withContext(Dispatchers.IO){
+                db.expenseDao().getExpensesByAccount(accountName)
+            }
+            callback(incomes,expenses)
+        }
+    }
+
+    fun updateIncome(income: Income){
+        viewModelScope.launch(Dispatchers.IO){
+            db.incomeDao().update(income)
+        }
+    }
+
+    fun updateExpense(expense: Expense){
+        viewModelScope.launch(Dispatchers.IO){
+            db.expenseDao().update(expense)
         }
     }
 

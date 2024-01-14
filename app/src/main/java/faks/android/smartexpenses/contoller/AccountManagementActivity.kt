@@ -20,6 +20,9 @@ import com.squareup.picasso.Picasso
 import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.ActivityAccountManagementBinding
 import faks.android.smartexpenses.model.Account
+import faks.android.smartexpenses.model.Expense
+import faks.android.smartexpenses.model.Income
+import faks.android.smartexpenses.model.SmartExpensesLocalDatabase
 import faks.android.smartexpenses.viewmodel.AccountManagementActivityViewModel
 import java.math.BigDecimal
 
@@ -97,7 +100,7 @@ class AccountManagementActivity : AppCompatActivity() {
 
         accountName.text = account.name
 
-        val balance = "€${account.balance ?: "0"}"
+        val balance = "€${account.balance}"
         accountTotalBalance.text = balance
 
 
@@ -125,20 +128,58 @@ class AccountManagementActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
 
         builder.setTitle("Confirm")
-        builder.setMessage("Are you sure you want to delete this account?")
+        builder.setMessage("Are you sure you want to delete this account?\n" +
+                "All income and expenses will have their accounts changed to 'others'")
 
-        builder.setPositiveButton("Yes") { dialog, which ->
+        builder.setPositiveButton("Yes") { _, _ ->
+
+            transferTransactionAccountToOther(account)
             accountManagementActivityViewModel.deleteAccount(account)
             binding.accountManagementLinearLayout.removeView(accountView)
             writeAllBalance()
         }
 
-        builder.setNegativeButton("No") { dialog, which ->
+        builder.setNegativeButton("No") { _, _ ->
 
         }
 
         val dialog = builder.create()
         dialog.show()
+
+    }
+
+    // Changes all transaction (expense and income) account type to other
+    private fun transferTransactionAccountToOther(account: Account){
+
+
+        accountManagementActivityViewModel.getTransactionsByAccount(account.name){ incomes, expenses ->
+
+
+            for(income in incomes){
+
+                val newIncome = Income(
+                    income.incomeID,income.amount, SmartExpensesLocalDatabase.OTHERS,
+                    income.categoryName, income.creationTime, income.description
+                )
+
+                accountManagementActivityViewModel.updateIncome(newIncome)
+
+            }
+
+            for(expense in expenses){
+
+                val newExpense = Expense(
+                    expense.expenseID,expense.amount, SmartExpensesLocalDatabase.OTHERS,
+                    expense.categoryName, expense.creationTime, expense.description
+                )
+
+                accountManagementActivityViewModel.updateExpense(newExpense)
+
+            }
+
+        }
+
+
 
     }
 

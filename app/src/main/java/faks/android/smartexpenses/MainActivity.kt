@@ -1,5 +1,6 @@
 package faks.android.smartexpenses
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -10,6 +11,11 @@ import faks.android.smartexpenses.databinding.ActivityMainBinding
 import faks.android.smartexpenses.contoller.CategoriesFragment
 import faks.android.smartexpenses.contoller.ReportsFragment
 import faks.android.smartexpenses.contoller.HomeFragment
+import faks.android.smartexpenses.model.Account
+import faks.android.smartexpenses.model.Category
+import faks.android.smartexpenses.model.SmartExpensesLocalDatabase
+import java.math.BigDecimal
+import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,6 +39,9 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
+        GlobalScope.launch {
+           prepopulateDatabase()
+        }
 
     }
 
@@ -91,4 +100,57 @@ class MainActivity : AppCompatActivity() {
             true
         } else super.onOptionsItemSelected(item)
     }
+
+
+
+    private fun prepopulateDatabase(){
+
+
+        val db: SmartExpensesLocalDatabase = SmartExpensesLocalDatabase.getDatabase(application)
+
+        // DEFAULT INCOME CATEGORY SETUP
+        val defaultIncomeCategory = db.categoryDao().getByCategoryName(SmartExpensesLocalDatabase.DEFAULT_CATEGORY_INCOME)
+        if(defaultIncomeCategory == null){
+
+            val categoryName = SmartExpensesLocalDatabase.DEFAULT_CATEGORY_INCOME
+            val type = CategoriesFragment.INCOME
+            val iconId =  R.drawable.sunbed
+            val colorID = Color.GRAY
+
+            val newCategoryDefault = Category(categoryName,type,iconId,colorID)
+            db.categoryDao().insertAll(newCategoryDefault)
+
+        }
+
+        // DEFAULT EXPENSE CATEGORY SETUP
+        val defaultExpenseCategory = db.categoryDao().getByCategoryName(SmartExpensesLocalDatabase.DEFAULT_CATEGORY_EXPENSE)
+        if(defaultExpenseCategory == null){
+
+            val categoryName = SmartExpensesLocalDatabase.DEFAULT_CATEGORY_EXPENSE
+            val type = CategoriesFragment.EXPENSE
+            val iconId =  R.drawable.sunbed
+            val colorID = Color.GRAY
+
+            val newCategoryDefault = Category(categoryName,type,iconId,colorID)
+            db.categoryDao().insertAll(newCategoryDefault)
+
+        }
+
+
+        // DEFAULT ACCOUNT SETUP
+        val defaultAccount = db.accountDao().findByName(SmartExpensesLocalDatabase.OTHERS)
+        if(defaultAccount == null){
+
+            val accountName = SmartExpensesLocalDatabase.OTHERS
+            val iconId =  R.drawable.sunbed
+            val colorID = Color.GRAY
+            val balance = BigDecimal("0")
+
+            val newDefaultAccount = Account(accountName,iconId,colorID,balance)
+            db.accountDao().insertAll(newDefaultAccount)
+
+        }
+
+    }
+
 }

@@ -106,7 +106,7 @@ class HomeFragment : Fragment() {
         setupMainTransactionView()
     }
 
-
+    // This lists ALL expenses, incomes and total balance on TOP VIEW on home fragment
     private fun setupMainTransactionView(){
 
 
@@ -307,7 +307,7 @@ class HomeFragment : Fragment() {
     }
 
     //This functions sets up item_linear_layout do display items such as categories and accounts
-    //Here a user can select category and account for his expenses or incomes
+    //Here a user can select category and account when creating new expenses or incomes
     private fun listTransactionItems( choice : Int, onItemSelected: (String) -> Unit){
 
         activity?.let {
@@ -456,7 +456,7 @@ class HomeFragment : Fragment() {
 
 
 
-
+    // Lists the sum of ALL transaction (expenses, incomes) by day on home fragment
     private fun displayTransactions(){
 
         homeFragmentViewModel.getIncomeExpenseWrapperMapByDateString(DATE_FORMAT) { wrappers->
