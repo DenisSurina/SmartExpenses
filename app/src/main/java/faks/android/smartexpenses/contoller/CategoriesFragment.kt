@@ -61,7 +61,6 @@ class CategoriesFragment : Fragment() {
         listCategoriesByType()
 
 
-
         mainFloatingButton.setOnClickListener {
             activity?.let {
 

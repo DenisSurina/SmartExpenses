@@ -22,7 +22,7 @@ abstract class SmartExpensesLocalDatabase : RoomDatabase(){
         private var INSTANCE: SmartExpensesLocalDatabase? = null
         const val OTHERS = "others"
         const val DEFAULT_CATEGORY_INCOME = "default_category_income"
-        const val DEFAULT_CATEGORY_EXPENSE = "default_category_income"
+        const val DEFAULT_CATEGORY_EXPENSE = "default_category_expense"
 
 
         fun getDatabase(context: Context): SmartExpensesLocalDatabase {
