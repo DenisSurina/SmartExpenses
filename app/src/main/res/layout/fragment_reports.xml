@@ -45,10 +45,14 @@
             android:layout_marginRight="20dp"
             android:gravity="center"
 
-            android:orientation="vertical"
-            tools:context="faks.android.smartexpenses.contoller.CategoriesFragment">
+            android:orientation="vertical">
 
-
+            <include
+                android:id="@+id/pie_chart_category"
+                layout="@layout/piechart_layout"
+                android:layout_width="match_parent"
+                android:layout_height="212dp"
+                android:layout_marginTop="10dp" />
 
         </LinearLayout>
 
