@@ -71,6 +71,10 @@ class AccountManagementActivity : AppCompatActivity() {
         accountManagementActivityViewModel.getAccounts { accounts ->
 
             for(account in accounts){
+
+                if(account.name == SmartExpensesLocalDatabase.OTHERS)
+                    continue
+
                 addAccountBriefView(account)
             }
 
@@ -148,7 +152,7 @@ class AccountManagementActivity : AppCompatActivity() {
 
     }
 
-    // Changes all transaction (expense and income) account type to other
+    // Changes all transaction (expense and income) account type to "other"
     private fun transferTransactionAccountToOther(account: Account){
 
 

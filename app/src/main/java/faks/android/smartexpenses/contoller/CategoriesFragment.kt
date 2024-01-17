@@ -283,6 +283,11 @@ class CategoriesFragment : Fragment() {
         categoryViewModel.getCategoriesByType(getSelectedType()){categories ->
 
             for(category in categories){
+
+                if(category.name == SmartExpensesLocalDatabase.DEFAULT_CATEGORY_INCOME
+                    || category.name == SmartExpensesLocalDatabase.DEFAULT_CATEGORY_EXPENSE)
+                    continue
+
                 addCategoryBriefView(category)
             }
 

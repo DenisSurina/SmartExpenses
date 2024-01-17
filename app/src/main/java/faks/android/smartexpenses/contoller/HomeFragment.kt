@@ -19,10 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
 import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.FragmentHomeBinding
-import faks.android.smartexpenses.model.Account
-import faks.android.smartexpenses.model.Expense
-import faks.android.smartexpenses.model.Income
-import faks.android.smartexpenses.model.IncomeExpenseWrapper
+import faks.android.smartexpenses.model.*
 import faks.android.smartexpenses.viewmodel.HomeFragmentViewModel
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
@@ -322,6 +319,10 @@ class HomeFragment : Fragment() {
                     homeFragmentViewModel.getCategoriesByType(EXPENSE){categories ->
 
                         for(category in categories){
+
+                            if(category.name == SmartExpensesLocalDatabase.DEFAULT_CATEGORY_EXPENSE)
+                                continue
+
                             val item = createItemForLinearLayout(category.iconID,category.colorID,category.name)
                             item?.setOnClickListener {
                                 dialog.dismiss()
@@ -337,6 +338,11 @@ class HomeFragment : Fragment() {
                     homeFragmentViewModel.getCategoriesByType(INCOME){categories ->
 
                         for(category in categories){
+
+                            if(category.name == SmartExpensesLocalDatabase.DEFAULT_CATEGORY_INCOME)
+                                continue
+
+
                             val item = createItemForLinearLayout(category.iconID,category.colorID,category.name)
                             item?.setOnClickListener {
                                 dialog.dismiss()
@@ -352,6 +358,11 @@ class HomeFragment : Fragment() {
                     homeFragmentViewModel.getAccounts{accounts ->
 
                         for(account in accounts){
+
+                            if(account.name == SmartExpensesLocalDatabase.OTHERS)
+                                continue
+
+
                             val item = createItemForLinearLayout(account.iconID,account.iconColorID,account.name)
                             item?.setOnClickListener {
                                 dialog.dismiss()
