@@ -48,8 +48,15 @@
             android:orientation="vertical">
 
             <include
-                android:id="@+id/pie_chart_category"
-                layout="@layout/piechart_layout"
+                android:id="@+id/fragment_reports_pie_chart_by_category"
+                layout="@layout/by_category_pie_chart_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" />
+
+            <include
+                android:id="@+id/fragment_reports_pie_chart_by_account"
+                layout="@layout/by_account_pie_chart_layout"
                 android:layout_width="match_parent"
                 android:layout_height="212dp"
                 android:layout_marginTop="10dp" />
