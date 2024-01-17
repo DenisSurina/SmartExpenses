@@ -9,5 +9,5 @@ data class CategoryExpense(
         parentColumn = "name",
         entityColumn = "category_name"
     )
-    val incomesByCategory: List<Expense>
+    val expenseByCategory: List<Expense>
 )
