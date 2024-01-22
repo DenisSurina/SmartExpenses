@@ -22,6 +22,7 @@ import faks.android.smartexpenses.databinding.FragmentHomeBinding
 import faks.android.smartexpenses.model.*
 import faks.android.smartexpenses.viewmodel.HomeFragmentViewModel
 import java.math.BigDecimal
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -83,13 +84,16 @@ class HomeFragment : Fragment() {
         }
 
         // set up a button that open account management activity
-        val manageAccountButton : Button = binding.includedTotalBalanceBriefViewLayout.manageAccountsButton
-        manageAccountButton.setOnClickListener {
-            val intent = Intent(requireContext(), AccountManagementActivity::class.java)
-            startActivity(intent)
+        val changeMonth : Button = binding.includedTotalBalanceBriefViewLayout.changeMonthButton
+        changeMonth.text = getCurrentDateFormatted()
+        changeMonth.setOnClickListener {
+            showMonthYearPicker()
         }
 
+
+
         setupMainTransactionView()
+
 
 
         displayTransactions()
@@ -470,7 +474,9 @@ class HomeFragment : Fragment() {
     // Lists the sum of ALL transaction (expenses, incomes) by day on home fragment
     private fun displayTransactions(){
 
-        homeFragmentViewModel.getIncomeExpenseWrapperMapByDateString(DATE_FORMAT) { wrappers->
+        val dateString = binding.includedTotalBalanceBriefViewLayout.changeMonthButton.text.toString()
+
+        homeFragmentViewModel.getIncomeExpenseWrapperMapByDate(DATE_FORMAT,dateString) { wrappers->
 
 
             val includedViewId = R.id.includedTotalBalanceBriefViewLayout
@@ -569,6 +575,47 @@ class HomeFragment : Fragment() {
         return sum
     }
 
+    private fun showMonthYearPicker() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_month_year_picker, null)
+        val monthPicker = dialogView.findViewById<NumberPicker>(R.id.monthPicker).apply {
+            minValue = 1
+            maxValue = 12
+            value = Calendar.getInstance().get(Calendar.MONTH) + 1
+        }
+        val yearPicker = dialogView.findViewById<NumberPicker>(R.id.yearPicker).apply {
+            val year = Calendar.getInstance().get(Calendar.YEAR)
+            minValue = year - 50
+            maxValue = year + 50
+            value = year
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Select Month and Year")
+            .setView(dialogView)
+            .setPositiveButton("OK") { dialog, _ ->
+                val calendar = Calendar.getInstance().apply {
+                    set(Calendar.YEAR, yearPicker.value)
+                    set(Calendar.MONTH, monthPicker.value - 1) // Calendar.MONTH is zero-based
+                }
+                val dateFormat = SimpleDateFormat("MMM. yyyy", Locale.getDefault())
+                val selectedDate = dateFormat.format(calendar.time)
+
+                // Set the formatted date to your button's text
+                binding.includedTotalBalanceBriefViewLayout.changeMonthButton.text = selectedDate
+                displayTransactions()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+            .show()
+    }
+
+
+    private fun getCurrentDateFormatted(): String {
+        val dateFormat = SimpleDateFormat("MMM. yyyy", Locale.getDefault())
+        return dateFormat.format(Calendar.getInstance().time)
+    }
 
 
     override fun onDestroyView() {

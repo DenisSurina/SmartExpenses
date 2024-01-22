@@ -106,11 +106,12 @@
 
 
         <Button
-            android:id="@+id/manageAccountsButton"
+            android:id="@+id/changeMonthButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Manage accounts"
+            android:hint="Month Picker"
+            android:backgroundTint="@color/green"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3" />

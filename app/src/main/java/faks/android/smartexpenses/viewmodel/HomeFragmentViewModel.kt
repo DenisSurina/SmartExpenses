@@ -99,5 +99,33 @@ class HomeFragmentViewModel(application : Application) : AndroidViewModel(applic
     }
 
 
+    fun getIncomeExpenseWrapperMapByDate(
+        groupByDayString: String,
+        monthYearString: String,
+        callback: (Map<String, List<IncomeExpenseWrapper>>) -> Unit
+    ) {
+        viewModelScope.launch {
+            val wrappers = withContext(Dispatchers.IO) {
+                val incomes = db.incomeDao().getAll().map { IncomeExpenseWrapper.IncomeEntry(it) }
+                val expenses = db.expenseDao().getAll().map { IncomeExpenseWrapper.ExpenseEntry(it) }
+                val allEntries = incomes + expenses
+
+                val monthYearFormat = SimpleDateFormat("MMM. yyyy", Locale.getDefault())
+                val dateFormat = SimpleDateFormat(groupByDayString, Locale.getDefault())
+
+                // Filter entries by the specified month and year
+                val filteredEntries = allEntries.filter { entry ->
+                    monthYearFormat.format(entry.date) == monthYearString
+                }
+
+                filteredEntries.groupBy { entry ->
+                    dateFormat.format(entry.date)
+                }
+            }
+            callback(wrappers)
+        }
+    }
+
+
 
 }

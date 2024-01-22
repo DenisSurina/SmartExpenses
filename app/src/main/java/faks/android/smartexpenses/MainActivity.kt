@@ -1,5 +1,6 @@
 package faks.android.smartexpenses
 
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import faks.android.smartexpenses.contoller.AccountManagementActivity
 import faks.android.smartexpenses.databinding.ActivityMainBinding
 import faks.android.smartexpenses.contoller.CategoriesFragment
 import faks.android.smartexpenses.contoller.ReportsFragment
@@ -60,6 +62,23 @@ class MainActivity : AppCompatActivity() {
         // to make the Navigation drawer icon always appear on the action bar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Transactions"
+
+
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_account -> {
+                    val intent = Intent(this, AccountManagementActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_settings -> {
+                    // Handle the nav_settings action
+                    true
+                }
+                else -> false
+            }
+        }
+
     }
 
 
