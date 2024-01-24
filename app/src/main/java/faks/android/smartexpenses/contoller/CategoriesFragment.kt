@@ -97,6 +97,7 @@ class CategoriesFragment : Fragment() {
                     .setPositiveButton("Close", null)
                     .create()
 
+                //TODO somehow pass displayIconImageView trough imageViewExtension (change border and shape)
                 iconPickerGridView.setOnItemClickListener { _, _, position, _ ->
                     // Get the selected image ID and pass it to the MainActivity
                     val selectedImageId = adapter.getItem(position) ?: 0
@@ -215,7 +216,7 @@ class CategoriesFragment : Fragment() {
     }
 
 
-
+    // TODO add more icons and possibly add them dynamically so we do not have huge functions
     private fun getIconsBy( type : String) : Array<Int>{
 
         if(type == EXPENSE) {
@@ -256,7 +257,7 @@ class CategoriesFragment : Fragment() {
 
     }
 
-
+    // TODO add margin bottom to this view and perhaps change its background color so its more visible.
     private fun addCategoryBriefView(category: Category){
 
         // create a new category view dynamically

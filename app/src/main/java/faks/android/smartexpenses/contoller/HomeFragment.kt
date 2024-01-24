@@ -28,6 +28,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
+
+// TODO add settings activity that will let user change theme and currency
+// TODO figure out how themes work and implement them
+// TODO add currency
+// TODO when clicking transaction brief open another activity that will display all transactions (not just their sum)
+
 class HomeFragment : Fragment() {
 
 

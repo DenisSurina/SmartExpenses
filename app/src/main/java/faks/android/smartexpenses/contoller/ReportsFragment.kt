@@ -52,6 +52,7 @@ class ReportsFragment : Fragment() {
         val showExpenseGraphs: Button = binding.showExpenseGraphs
         val showIncomeGraphs: Button = binding.showIncomeGraphs
 
+        // TODO these colors are hardcoded. Change them according to style and user defined theme
         showExpenseGraphs.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cyan))
         showIncomeGraphs.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue))
 
@@ -81,7 +82,7 @@ class ReportsFragment : Fragment() {
     }
 
 
-
+    // TODO Fix coloring on pie chart's
     // This function sets up all pie charts in this fragment ( by income or expense)
     private fun setupPieChartsByTransactionType(transactionType : String){
 
