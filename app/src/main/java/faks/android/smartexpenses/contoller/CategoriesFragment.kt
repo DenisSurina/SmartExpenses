@@ -8,11 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.room.Room
 import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.FragmentCategoriesBinding
+import faks.android.smartexpenses.misc.setupImageWithBorder
 import faks.android.smartexpenses.model.*
 import faks.android.smartexpenses.viewmodel.CategoryFragmentViewModel
 
@@ -41,6 +42,8 @@ class CategoriesFragment : Fragment() {
     companion object{
         const val INCOME: String = "Income"
         const val EXPENSE: String = "Expense"
+        const val COLOR: String = "color"
+        const val IMAGE: String = "image"
     }
 
     override fun onCreateView(
@@ -67,6 +70,8 @@ class CategoriesFragment : Fragment() {
                 val builder = AlertDialog.Builder(it)
                 val customLayout = inflater.inflate(R.layout.add_category_popup_window_layout, null)
 
+
+
                 //category data
                 val categoryName = customLayout.findViewById<EditText>(R.id.add_category_name_edit_text)
                 val openIconGrid = customLayout.findViewById<TextView>(R.id.add_category_icon_text_view)
@@ -77,13 +82,12 @@ class CategoriesFragment : Fragment() {
 
                 // create grid view that displays icons
 
-                // Sample images (replace with your actual image resources)
                 val images = getIconsBy(getSelectedType())
 
                 val iconPickerGridView = GridView(it)
-                iconPickerGridView.numColumns = 5 // Set the number of columns as needed
-                iconPickerGridView.horizontalSpacing = 8 // Adjust horizontal spacing as needed
-                iconPickerGridView.verticalSpacing = 8 // Adjust vertical spacing as needed
+                iconPickerGridView.numColumns = 5
+                iconPickerGridView.horizontalSpacing = 8
+                iconPickerGridView.verticalSpacing = 8
                 iconPickerGridView.setPadding(16, 16, 16, 16)
                 val adapter = CategoryIconImageAdapter(it, images)
                 iconPickerGridView.adapter = adapter
@@ -106,13 +110,11 @@ class CategoriesFragment : Fragment() {
                     iconPickerAlertDialog.show()
                 }
 
-                val colors = arrayOf(
-                    Color.RED, Color.BLUE, Color.GREEN
-                )
+                val colors = getColors()
 
                 val colorIconPickerGridView = GridView(it)
-                colorIconPickerGridView.numColumns = 5 // Set the number of columns as needed
-                colorIconPickerGridView.horizontalSpacing = 8 // Adjust horizontal spacing as needed
+                colorIconPickerGridView.numColumns = 5
+                colorIconPickerGridView.horizontalSpacing = 8
                 colorIconPickerGridView.verticalSpacing = 8
 
                 colorIconPickerGridView.adapter = CategoryIconColorAdapter(it, colors)
@@ -126,6 +128,8 @@ class CategoriesFragment : Fragment() {
                     val selectedColor = colors[position]
                     // Handle the color selection
                     displayIconImageView.setBackgroundColor(selectedColor)
+
+
                     newCategoryColorID = selectedColor
                     colorPickerAlertDialog.dismiss()
                 }
@@ -263,15 +267,23 @@ class CategoriesFragment : Fragment() {
         categoryName.text = category.name
 
         val categoryIcon = newCategoryView.findViewById<ImageView>(R.id.category_icon_image_view)
-        categoryIcon.setImageResource(category.iconID)
 
-        categoryIcon.setBackgroundColor(category.colorID)
+        categoryIcon.setupImageWithBorder(
+            iconId = category.iconID,
+            colorId = category.colorID,
+            radius = 3,
+            margin = 3,
+            borderWidth = 3
+
+        )
+
 
         val deleteCategoryImageView = newCategoryView.findViewById<ImageView>(R.id.delete_category_image_view)
 
         deleteCategoryImageView.setOnClickListener{
             deleteCategoryPopup(category)
         }
+
 
         binding.categoryLinearLayoutContainer.addView(newCategoryView)
 
@@ -361,6 +373,41 @@ class CategoriesFragment : Fragment() {
         }
 
     }
+
+    private fun getColors(): Array<Int> {
+
+        val colorArray = requireActivity().resources.obtainTypedArray(R.array.my_colors)
+        val colorList = mutableListOf<Int>()
+
+        for (i in 0 until colorArray.length()) {
+            colorList.add(colorArray.getColor(i, 0))
+        }
+
+        colorArray.recycle() // Remember to recycle the TypedArray
+
+        return colorList.toTypedArray()
+    }
+
+
+    private fun updateImageView(imageView: ImageView,color: Int?,icon: Int?){
+
+        val iconId = icon ?: R.drawable.trash_can_icon
+        val colorId = icon ?: Color.WHITE
+
+        imageView.setupImageWithBorder(
+            iconId = iconId,
+            colorId = colorId,
+            radius = 2,
+            margin = 2,
+            borderWidth = 2
+            // borderColor = Color.BLACK (optional, default is black)
+        )
+
+
+
+
+    }
+
 
 
     override fun onDestroyView() {

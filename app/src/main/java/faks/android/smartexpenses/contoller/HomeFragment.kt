@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
 import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.FragmentHomeBinding
+import faks.android.smartexpenses.misc.setupImageWithBorder
 import faks.android.smartexpenses.model.*
 import faks.android.smartexpenses.viewmodel.HomeFragmentViewModel
 import java.math.BigDecimal
@@ -391,16 +392,16 @@ class HomeFragment : Fragment() {
         val itemImage = item.findViewById<ImageView>(R.id.item_image_view_brief)
         val itemName = item.findViewById<TextView>(R.id.item_text_view_brief)
 
-        Picasso.get()
-            .load(iconId)
-            .transform(ImageTransformer(0, 0))
-            .into(itemImage)
-
-        val roundedBackground = ContextCompat.getDrawable(requireContext(), R.drawable.icons_background) as GradientDrawable
-        roundedBackground.setColor(colorId)
-        itemImage?.background = roundedBackground
-
         itemName?.text = name
+
+        itemImage.setupImageWithBorder(
+            iconId = iconId,
+            colorId = colorId,
+            radius = 2,
+            margin = 2,
+            borderWidth = 2
+            // borderColor = Color.BLACK (optional, default is black)
+        )
 
         return item
 

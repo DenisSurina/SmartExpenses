@@ -16,7 +16,7 @@ class CategoryIconImageAdapter(context: Context, private val images: Array<Int>)
 
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
             imageView.adjustViewBounds = true
-            imageView.setPadding(4, 4, 4, 4)
+            imageView.setPadding(5, 5, 5, 5)
         } else {
             imageView = convertView as ImageView
         }
