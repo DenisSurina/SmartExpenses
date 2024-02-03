@@ -65,12 +65,13 @@
 
         <TextView
             android:id="@+id/totalIncomeBriefDisplayTextView"
-            android:layout_width="60dp"
+            android:layout_width="136dp"
             android:layout_height="30dp"
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="$50"
             android:textColor="?attr/text_primary"
+            android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.638"
             app:layout_constraintStart_toEndOf="@+id/totalIncomeText"
@@ -100,12 +101,13 @@
 
         <TextView
             android:id="@+id/totalExpenseBriefDisplayTextView"
-            android:layout_width="60dp"
-            android:layout_height="30dp"
+            android:layout_width="133dp"
+            android:layout_height="29dp"
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="$50"
             android:textColor="?attr/text_primary"
+            android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.638"
             app:layout_constraintStart_toEndOf="@+id/textView3"
@@ -117,6 +119,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+
             android:text="dada"
             android:textColor="?attr/text_primary"
             android:theme="@style/ButtonSmartExpense"

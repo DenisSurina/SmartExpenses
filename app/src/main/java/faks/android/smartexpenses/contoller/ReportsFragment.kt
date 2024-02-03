@@ -257,7 +257,7 @@ class ReportsFragment : Fragment() {
         pieChart.setEntryLabelTextSize(12f)
         pieChart.setEntryLabelColor(Color.BLACK)
 
-        pieChart.centerText = title
+        pieChart.centerText = "$$title"
         pieChart.setCenterTextSize(24f)
 
         pieChart.description.isEnabled = true
@@ -285,11 +285,7 @@ class ReportsFragment : Fragment() {
 
         dataSet.setDrawValues(false)
 
-        dataSet.sliceSpace = 2f // Space between slices
-        dataSet.valueLineColor = Color.BLACK // If you are showing values outside, set their line color
-        dataSet.valueLinePart1OffsetPercentage = 80f // Line starts outside of chart
-        dataSet.valueLinePart1Length = 0.3f // Length of first part of the line
-        dataSet.valueLinePart2Length = 0.4f
+
 
         val data = PieData(dataSet)
         pieChart.data = data
@@ -306,7 +302,7 @@ class ReportsFragment : Fragment() {
         val imageView = newTransactionView.findViewById<ImageView>(R.id.pie_chart_transaction_brief_view_image_view)
 
         nameView.text = name
-        sumView.text = sum.toString()
+        sumView.text = "$$sum"
 
 
         imageView.setupImageWithBorder(
