@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/total_balance_main_view_design"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <TextView
         android:id="@+id/totalBalanceText"
@@ -14,7 +15,8 @@
         android:layout_marginTop="16dp"
         android:text="Total Balance"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="?attr/text_primary"/>
 
     <TextView
         android:id="@+id/totalBalanceTextView"
@@ -23,6 +25,7 @@
         android:layout_marginStart="16dp"
         android:text="$1000.00"
         android:textSize="30dp"
+        android:textColor="?attr/text_primary"
         app:flow_verticalAlign="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/totalBalanceText" />
@@ -55,6 +58,7 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="Income"
+            android:textColor="?attr/text_primary"
             app:layout_constraintStart_toEndOf="@+id/totalIncomeBriefDisplayImage"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,6 +70,7 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="$50"
+            android:textColor="?attr/text_primary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.638"
             app:layout_constraintStart_toEndOf="@+id/totalIncomeText"
@@ -88,6 +93,7 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="Expense"
+            android:textColor="?attr/text_primary"
             app:layout_constraintStart_toEndOf="@+id/totalExpenseBriefDisplayImage"
             app:layout_constraintTop_toBottomOf="@+id/totalIncomeText" />
 
@@ -99,6 +105,7 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="$50"
+            android:textColor="?attr/text_primary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.638"
             app:layout_constraintStart_toEndOf="@+id/textView3"
@@ -110,8 +117,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:hint="Month Picker"
-            android:backgroundTint="@color/green"
+            android:text="dada"
+            android:textColor="?attr/text_primary"
+            android:theme="@style/ButtonSmartExpense"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3" />

@@ -1,11 +1,14 @@
 package faks.android.smartexpenses
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import faks.android.smartexpenses.contoller.AccountManagementActivity
@@ -26,11 +29,26 @@ class MainActivity : AppCompatActivity() {
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
     private lateinit var bottomNavigationView: BottomNavigationView
 
+
+    companion object{
+
+        const val LIGHT = "Light"
+        const val DARK = "Dark"
+        const val DEFAULT_PREFERENCES = "default_preferences"
+        const val THEME_PREFERENCES = "theme_pref"
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
+
+
+
+        setContentView(binding.root)
 
         createActionBar()
         setupBottomNavigation()
@@ -44,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         GlobalScope.launch {
            prepopulateDatabase()
         }
+
 
     }
 
@@ -73,6 +92,19 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_settings -> {
                     // Handle the nav_settings action
+
+                    val settingsText = menuItem.title.toString()
+                    val prefs = this.getSharedPreferences(DEFAULT_PREFERENCES, Context.MODE_PRIVATE)
+
+                    if(settingsText == "Dark Theme"){
+                        prefs.edit().putString(THEME_PREFERENCES, DARK).apply()
+                        initTheme(DARK)
+
+                    }else{
+                        prefs.edit().putString(THEME_PREFERENCES, LIGHT).apply()
+                        initTheme(LIGHT)
+                    }
+
                     true
                 }
                 else -> false
@@ -171,5 +203,19 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+    private fun initTheme(theme : String){
+
+        val menuItem = binding.navView.menu.findItem(R.id.nav_settings)
+
+        if(theme == DARK){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            menuItem.title = "Light Theme"
+        }else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            menuItem.title = "Dark Theme"
+        }
+    }
+
 
 }

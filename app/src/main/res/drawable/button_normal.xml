@@ -8,8 +8,8 @@
     </item>
     <item android:top="-2dp" android:right="-2dp" android:left="-2dp">
         <shape android:shape="rectangle">
-            <stroke android:width="2dp" android:color="#dfecd7"/> <!-- Transparent border -->
-            <solid android:color="#dfecd7"/>
+            <stroke android:width="2dp" android:color="?attr/background_primary"/> <!-- Transparent border -->
+            <solid android:color="?attr/background_primary"/>
         </shape>
     </item>
 </layer-list>

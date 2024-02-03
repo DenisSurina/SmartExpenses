@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.FragmentReportsBinding
+import faks.android.smartexpenses.misc.setupImageWithBorder
 import faks.android.smartexpenses.model.SmartExpensesLocalDatabase
 import faks.android.smartexpenses.viewmodel.ReportFragmentViewModel
 import java.math.BigDecimal
@@ -52,22 +53,17 @@ class ReportsFragment : Fragment() {
         val showExpenseGraphs: Button = binding.showExpenseGraphs
         val showIncomeGraphs: Button = binding.showIncomeGraphs
 
-        // TODO these colors are hardcoded. Change them according to style and user defined theme
-        showExpenseGraphs.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cyan))
-        showIncomeGraphs.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue))
 
         showExpenseGraphs.setOnClickListener {
 
             setupPieChartsByTransactionType(CategoriesFragment.EXPENSE)
-            changeButtonColor(showExpenseGraphs, true)
-            changeButtonColor(showIncomeGraphs, false)
+
         }
 
         showIncomeGraphs.setOnClickListener {
 
             setupPieChartsByTransactionType(CategoriesFragment.INCOME)
-            changeButtonColor(showExpenseGraphs, false)
-            changeButtonColor(showIncomeGraphs, true)
+
         }
     }
 
@@ -289,6 +285,12 @@ class ReportsFragment : Fragment() {
 
         dataSet.setDrawValues(false)
 
+        dataSet.sliceSpace = 2f // Space between slices
+        dataSet.valueLineColor = Color.BLACK // If you are showing values outside, set their line color
+        dataSet.valueLinePart1OffsetPercentage = 80f // Line starts outside of chart
+        dataSet.valueLinePart1Length = 0.3f // Length of first part of the line
+        dataSet.valueLinePart2Length = 0.4f
+
         val data = PieData(dataSet)
         pieChart.data = data
         pieChart.invalidate() // refresh
@@ -306,8 +308,15 @@ class ReportsFragment : Fragment() {
         nameView.text = name
         sumView.text = sum.toString()
 
-        imageView.setImageResource(iconId)
-        imageView.setBackgroundColor(colorId)
+
+        imageView.setupImageWithBorder(
+            iconId = iconId,
+            colorId = colorId,
+            radius = 3,
+            margin = 3,
+            borderWidth = 3
+
+        )
 
 
         layout.addView(newTransactionView)

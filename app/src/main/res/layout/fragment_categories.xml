@@ -16,16 +16,17 @@
             android:id="@+id/list_income_categories_button"
             android:layout_height="match_parent"
             android:layout_weight="1"
-
+            android:background="@drawable/button_generic"
             style="@style/Theme.SmartExpenses"
-            android:text="income"/>
+            android:text="INCOME"/>
 
         <Button android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/list_expense_categories_button"
+            android:background="@drawable/button_generic"
             style="@style/Theme.SmartExpenses"
-            android:text="expense"/>
+            android:text="EXPENSE"/>
     </LinearLayout>
 
 

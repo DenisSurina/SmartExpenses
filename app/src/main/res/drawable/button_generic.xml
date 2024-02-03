@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="?attr/background_secondary" /> <!-- Background color -->
 
-    <corners android:radius="30dp"/> <!-- Corner radius -->
+    <solid android:color="@color/cold" /> <!-- Background color -->
+
 
     <stroke
         android:width="3dp"
         android:color="?attr/stroke_color"
         /> <!-- Border color and width -->
+
 </shape>
