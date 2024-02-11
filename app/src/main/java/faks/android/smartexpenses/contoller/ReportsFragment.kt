@@ -20,6 +20,7 @@ import com.github.mikephil.charting.data.PieEntry
 import faks.android.smartexpenses.R
 import faks.android.smartexpenses.databinding.FragmentReportsBinding
 import faks.android.smartexpenses.misc.setupImageWithBorder
+import faks.android.smartexpenses.model.CategoryExpense
 import faks.android.smartexpenses.model.SmartExpensesLocalDatabase
 import faks.android.smartexpenses.viewmodel.ReportFragmentViewModel
 import java.math.BigDecimal
@@ -33,6 +34,13 @@ class ReportsFragment : Fragment() {
     private var expenseSelected = false
 
     private lateinit var reportFragmentViewModel: ReportFragmentViewModel
+
+
+    class TransactionModel(val transactionName: String,
+                           val transactionIcon: Int,
+                           val transactionColor: Int,
+                           val transactionSum: BigDecimal  ) {}
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,7 +86,6 @@ class ReportsFragment : Fragment() {
     }
 
 
-    // TODO Fix coloring on pie chart's
     // This function sets up all pie charts in this fragment ( by income or expense)
     private fun setupPieChartsByTransactionType(transactionType : String){
 
@@ -95,6 +102,7 @@ class ReportsFragment : Fragment() {
                     val colors = ArrayList<Int>()
                     val pieChart = binding.fragmentReportsPieChartByCategory.byCategoryPieChartTemplate
                     val linearLayout = binding.fragmentReportsPieChartByCategory.byCategoryPieChartLinearLayout
+                    val transactionList = mutableListOf<TransactionModel>()
 
                     clearTransactionBriefViews(linearLayout,pieChart)
 
@@ -110,14 +118,18 @@ class ReportsFragment : Fragment() {
 
                         totalIncomesByCategories += categoryIncomeSum
 
-
-                        addTransactionBriefView(linearLayout,categoryName,categoryIncomeSum,cat.category.iconID,cat.category.colorID)
-
+                        val newTransaction = TransactionModel(categoryName,cat.category.iconID,cat.category.colorID,categoryIncomeSum)
+                        transactionList.add(newTransaction)
                     }
 
+                    transactionList.sortByDescending {
+                        it.transactionSum
+                    }
+
+                    transactionList.forEach{addTransactionBriefView(linearLayout,it.transactionName,it.transactionSum,it.transactionIcon,it.transactionColor)}
 
                     setupPieChart(pieChart,totalIncomesByCategories.toString(), "By Category")
-                    loadPieChartData(pieChart, "categories", transactionMap,colors)
+                    loadPieChartData(pieChart, "Categories", transactionList)
 
                 }
             }
@@ -134,6 +146,7 @@ class ReportsFragment : Fragment() {
                     val colors = ArrayList<Int>()
                     val pieChart = binding.fragmentReportsPieChartByAccount.byAccountPieChartTemplate
                     val linearLayout = binding.fragmentReportsPieChartByAccount.byAccountPieChartLinearLayout
+                    val transactionList = mutableListOf<TransactionModel>()
 
                     clearTransactionBriefViews(linearLayout,pieChart)
 
@@ -150,12 +163,20 @@ class ReportsFragment : Fragment() {
                         totalIncomesByAccounts += accountIncomeSum
 
 
-                        addTransactionBriefView(linearLayout,accountName,accountIncomeSum,acc.account.iconID,acc.account.iconColorID)
+                        val newTransaction = TransactionModel(accountName,acc.account.iconID,acc.account.iconColorID,accountIncomeSum)
+                        transactionList.add(newTransaction)
 
                     }
 
-                    setupPieChart(pieChart,totalIncomesByAccounts.toString(),"By Account")
-                    loadPieChartData(pieChart, "Accounts", transactionMap,colors)
+                    transactionList.sortByDescending {
+                        it.transactionSum
+                    }
+
+                    transactionList.forEach{addTransactionBriefView(linearLayout,it.transactionName,it.transactionSum,it.transactionIcon,it.transactionColor)}
+
+                    setupPieChart(pieChart,totalIncomesByAccounts.toString(), "By Category")
+                    loadPieChartData(pieChart, "Categories", transactionList)
+
 
                 }
 
@@ -177,6 +198,8 @@ class ReportsFragment : Fragment() {
                     val pieChart = binding.fragmentReportsPieChartByCategory.byCategoryPieChartTemplate
                     val linearLayout = binding.fragmentReportsPieChartByCategory.byCategoryPieChartLinearLayout
 
+                    val transactionList = mutableListOf<TransactionModel>()
+
                     clearTransactionBriefViews(linearLayout,pieChart)
 
                     for( cat in categoryExpenses){
@@ -192,13 +215,21 @@ class ReportsFragment : Fragment() {
                         totalExpenseByCategories += categoryExpenseSum
 
 
-                        addTransactionBriefView(linearLayout,categoryName,categoryExpenseSum,cat.category.iconID,cat.category.colorID)
+                        val newTransaction = TransactionModel(categoryName,cat.category.iconID,cat.category.colorID,categoryExpenseSum)
+                        transactionList.add(newTransaction)
 
                     }
 
+                    transactionList.sortByDescending {
+                        it.transactionSum
+                    }
+
+                    transactionList.forEach{addTransactionBriefView(linearLayout,it.transactionName,it.transactionSum,it.transactionIcon,it.transactionColor)}
 
                     setupPieChart(pieChart,totalExpenseByCategories.toString(), "By Category")
-                    loadPieChartData(pieChart, "categories", transactionMap,colors)
+                    loadPieChartData(pieChart, "Categories", transactionList)
+
+
 
                 }
             }
@@ -211,32 +242,39 @@ class ReportsFragment : Fragment() {
                 if (accountExpenses != null) {
 
                     val transactionMap : MutableMap<String, BigDecimal> = sortedMapOf()
-                    var totalExpenseByAccounts = BigDecimal.ZERO
+                    var totalExpenseByCategories = BigDecimal.ZERO
                     val colors = ArrayList<Int>()
                     val pieChart = binding.fragmentReportsPieChartByAccount.byAccountPieChartTemplate
                     val linearLayout = binding.fragmentReportsPieChartByAccount.byAccountPieChartLinearLayout
+                    val transactionList = mutableListOf<TransactionModel>()
 
                     clearTransactionBriefViews(linearLayout,pieChart)
 
                     for( acc in accountExpenses){
 
-                        val accountName = acc.account.name
-                        val accountExpenseSum  = acc.expensesByAccount.sumOf { it.amount }
-                        if(accountName == SmartExpensesLocalDatabase.OTHERS || accountExpenseSum.toDouble() <= 0)
+                        val categoryName = acc.account.name
+                        val categoryExpenseSum  = acc.expensesByAccount.sumOf { it.amount }
+                        if(categoryName == SmartExpensesLocalDatabase.DEFAULT_CATEGORY_EXPENSE || categoryExpenseSum.toDouble() <= 0)
                             continue
 
                         colors.add(acc.account.iconColorID)
-                        transactionMap[accountName] = accountExpenseSum
+                        transactionMap[categoryName] = categoryExpenseSum
 
-                        totalExpenseByAccounts += accountExpenseSum
+                        totalExpenseByCategories += categoryExpenseSum
 
-
-                        addTransactionBriefView(linearLayout,accountName,accountExpenseSum,acc.account.iconID,acc.account.iconColorID)
+                        val newTransaction = TransactionModel(categoryName,acc.account.iconID,acc.account.iconColorID,categoryExpenseSum)
+                        transactionList.add(newTransaction)
 
                     }
 
-                    setupPieChart(pieChart,totalExpenseByAccounts.toString(), "By Account")
-                    loadPieChartData(pieChart, "accounts", transactionMap,colors)
+                    transactionList.sortByDescending {
+                        it.transactionSum
+                    }
+
+                    transactionList.forEach{addTransactionBriefView(linearLayout,it.transactionName,it.transactionSum,it.transactionIcon,it.transactionColor)}
+
+                    setupPieChart(pieChart,totalExpenseByCategories.toString(), "By Category")
+                    loadPieChartData(pieChart, "Categories", transactionList)
 
                 }
 
@@ -268,24 +306,22 @@ class ReportsFragment : Fragment() {
 
 
     // Loads the data for pie chart
-    private fun loadPieChartData(pieChart: PieChart, labelName: String, transactionMap : Map<String,BigDecimal>, colors: ArrayList<Int>) {
+
+    private fun loadPieChartData(pieChart: PieChart, labelName: String, transactionsList: MutableList<TransactionModel>) {
         val entries = ArrayList<PieEntry>()
+        val entryColors = ArrayList<Int>()
 
-        for(key in transactionMap.keys){
-
-            val pieEntry = PieEntry(transactionMap[key]!!.toFloat(),key)
+        for (transaction in transactionsList) {
+            val pieEntry = PieEntry(transaction.transactionSum.toFloat(), transaction.transactionName)
             entries.add(pieEntry)
-
+            entryColors.add(transaction.transactionColor)
         }
 
         val dataSet = PieDataSet(entries, labelName)
-        dataSet.colors = colors
+        dataSet.colors = entryColors
         dataSet.sliceSpace = 3f
         dataSet.valueTextSize = 18f
-
         dataSet.setDrawValues(false)
-
-
 
         val data = PieData(dataSet)
         pieChart.data = data

@@ -9,25 +9,14 @@
         <item>@color/teal_700</item>
         <item>@color/lightgreen</item>
         <item>@color/lightblue</item>
-        <item>@color/lightgray</item>
         <item>@color/darkred</item>
         <item>@color/darkgreen</item>
         <item>@color/darkblue</item>
         <item>@color/darkorange</item>
         <item>@color/darkpurple</item>
-        <item>@color/white</item>
-        <item>@color/ivory</item>
-        <item>@color/light_yellow</item>
         <item>@color/yellow</item>
-        <item>@color/snow</item>
-        <item>@color/floral_white</item>
         <item>@color/lemon_chiffon</item>
-        <item>@color/cornsilk</item>
-        <item>@color/seashell</item>
-        <item>@color/lavender_blush</item>
-        <item>@color/papaya_whip</item>
         <item>@color/blanched_almond</item>
-        <item>@color/misty_rose</item>
         <item>@color/bisque</item>
         <item>@color/moccasin</item>
         <item>@color/navajo_white</item>
@@ -51,9 +40,6 @@
         <item>@color/linen</item>
         <item>@color/antique_white</item>
         <item>@color/salmon</item>
-        <item>@color/ghost_white</item>
-        <item>@color/mint_cream</item>
-        <item>@color/white_smoke</item>
         <item>@color/beige</item>
         <item>@color/wheat</item>
         <item>@color/sandy_brown</item>

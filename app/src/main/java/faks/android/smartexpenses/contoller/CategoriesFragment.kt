@@ -78,7 +78,7 @@ class CategoriesFragment : Fragment() {
                 val openColorGrid = customLayout.findViewById<TextView>(R.id.add_category_icon_color_text_view)
                 val displayIconImageView = customLayout.findViewById<ImageView>(R.id.add_category_display_icon_image_view)
                 var newCategoryIconId : Int = -1
-                var newCategoryColorID: Int = Color.WHITE
+                var newCategoryColorID: Int = R.color.bisque
 
                 // create grid view that displays icons
 

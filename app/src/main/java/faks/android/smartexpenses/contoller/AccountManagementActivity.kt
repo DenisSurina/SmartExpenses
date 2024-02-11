@@ -206,7 +206,7 @@ class AccountManagementActivity : AppCompatActivity() {
 
 
         var accountImageIconId : Int = -1
-        var accountImageColorID: Int = Color.WHITE
+        var accountImageColorID: Int = R.color.bisque
 
 
         // open alert dialog that let's user select color for account icon image
