@@ -1,3 +1,3 @@
 # Smart Expenses app for android
 
-Application that tracks expenses and incomes aswell as total balance across multiple accounts.
+Application that tracks expenses and incomes as well as total balance across multiple accounts.
